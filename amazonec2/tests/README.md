@@ -12,12 +12,12 @@ The Amazon ec2 connector allows you to access the Amazon ec2 REST API through ba
 1. Create `ballerina.conf` file in `package-amazonec2`, with following keys and provide values for the variables.
     
     ```.conf
-    ACCESS_KEY_ID=""
-    SECRET_ACCESS_KEY=""
-    REGION=""
-    IMAGE_ID=""
-    SOURCE_IMAGE_ID=""
-    SOURCE_REGION=""
+    ACCESS_KEY_ID="<your_access_key_id>"
+    SECRET_ACCESS_KEY="<your_secret_access_key_id>"
+    REGION="<your_current_region>"
+    IMAGE_ID="<The ID of the AMI, which is required to launch an instance>"
+    SOURCE_IMAGE_ID="<The ID of the AMI to copy>"
+    SOURCE_REGION="<The name of the region that contains the AMI to copy>"
     ```
 2. Navigate to the folder package-amazonec2
 

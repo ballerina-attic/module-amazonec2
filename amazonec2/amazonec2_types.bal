@@ -60,12 +60,12 @@ public type Client object {
     public AmazonEC2Configuration amazonEC2Config = {};
     public AmazonEC2Connector amazonEC2Connector = new;
 
-    # AmazonEC2 connector endpoint initialization function
+    # AmazonEC2 connector endpoint initialization function.
     # + config - AmazonEC2 connector configuration
 
     public function init(AmazonEC2Configuration config);
 
-    # Return the AmazonEC2 connector client
+    # Return the AmazonEC2 connector client.
     # + return - AmazonEC2 connector client
 
     public function getCallerActions() returns AmazonEC2Connector;
@@ -113,19 +113,18 @@ public type AmazonEC2Connector object {
     public function createImage(string instanceId, string name) returns Image|AmazonEC2Error;
 
     # Describe images.
-    # + imgIdArr -  The string of AMI array to describe those images.
+    # + imgIdArr -  The string of AMI array to describe those images
     # + return - If successful, returns Image[] with image details, else returns an AmazonEC2Error
     public function describeImages(string... imgIdArr) returns Image[]|AmazonEC2Error;
 
-    # Deregisters the specified AMI. After you deregister an AMI, it can't be used to launch new instances; however,
-    # it doesn't affect any instances that you've already launched from the AMI.
+    # Deregisters the specified AMI. After you deregister an AMI, it can't be used to launch new instances.
     # + imgId - The ID of the AMI
-    # + return - If successful, returns success response, else returns an AmazonEC2Error.
+    # + return - If successful, returns success response, else returns an AmazonEC2Error
     public function deRegisterImage(string imgId) returns EC2ServiceResponse|AmazonEC2Error;
 
     # Describes the specified attribute of the specified AMI. You can specify only one attribute at a time.
     # + amiId - The ID of the AMI
-    # + attribute - The specific attribute of the image.
+    # + attribute - The specific attribute of the image
     # + return - If successful, returns success response, else returns an AmazonEC2Error
     public function describeImageAttribute(string amiId, string attribute) returns ImageAttribute |AmazonEC2Error;
 
@@ -144,8 +143,7 @@ public type AmazonEC2Connector object {
     public function createSecurityGroup(string groupName, string groupDescription, string? vpcId = ())
                         returns SecurityGroup |AmazonEC2Error;
 
-    # Deletes a security group. Can specify either the security group name or the security group ID.
-    # But group id is required for a non default VPC.
+    # Deletes a security group. Can specify either the security group name or the security group ID, But group id is required for a non default VPC.
     # + groupId -  The id of the security group
     # + groupName - The name of the security group
     # + return - If successful, returns success response, else returns an AmazonEC2Error
@@ -164,7 +162,7 @@ public type AmazonEC2Connector object {
     # Attaches an EBS volume to a running or stopped instance and exposes it to the instance with the specified device name.
     # + device - The device name
     # + instanceId - The ID of the instance
-    # + volumeId - The ID of the EBS volume. The volume and instance must be within the same Availability Zone
+    # + volumeId - The ID of the EBS volume, The volume and instance must be within the same Availability Zone
     # + return - If successful, returns Attachment information, else returns an AmazonEC2Error
     public function attachVolume(string device, string instanceId, string volumeId) returns AttachmentInfo|AmazonEC2Error;
 
@@ -209,7 +207,7 @@ public type EC2Instance record {
     string ipAddress;
 };
 
-# Define an Image details
+# Define an Image details.
 # + description - Image description
 # + creationDate - Image creation date
 # + imageId - Id of the image
@@ -264,7 +262,7 @@ public type LaunchPermissionAttribute record {
 };
 
 # Define ram disk image attribute, based on this attribute type, an image will be described.
-# + ramDiskValue - The RAM disk ID.
+# + ramDiskValue - The RAM disk ID
 
 public type RamdiskAttribute record {
     string ramDiskValue;
@@ -332,7 +330,7 @@ public type AttachmentInfo record {
     string volumeId;
 };
 
-# Amazon ec2 Client Error
+# Amazon ec2 Client Error.
 # + message - Error message of the response
 # + cause - The error which caused the error
 

@@ -82,8 +82,7 @@ function testRunInstances() {
     }
 }
 
-@test:Config
-{
+@test:Config {
     dependsOn:["testRunInstances"]
 }
 function testDescribeInstances() {
@@ -104,8 +103,7 @@ function testDescribeInstances() {
     }
 }
 
-@test:Config
-{
+@test:Config {
     dependsOn:["testDescribeInstances"]
 }
 function testCreateImage() {
@@ -126,8 +124,7 @@ function testCreateImage() {
     }
 }
 
-@test:Config
-{
+@test:Config {
     dependsOn:["testCreateImage"]
 }
 function testDescribeImages() {
@@ -148,8 +145,7 @@ function testDescribeImages() {
     }
 }
 
-@test:Config
-{
+@test:Config {
     dependsOn: ["testDescribeImages"]
 }
 function testDescribeImageAttribute() {
@@ -168,8 +164,7 @@ function testDescribeImageAttribute() {
     }
 }
 
-@test:Config
-{
+@test:Config {
     dependsOn: ["testDescribeImageAttribute"]
 }
 function testDeRegisterImage() {
@@ -189,8 +184,7 @@ function testDeRegisterImage() {
     }
 }
 
-@test:Config
-{
+@test:Config {
     dependsOn: ["testDeRegisterImage"]
 }
 function testCopyImage() {
@@ -209,8 +203,7 @@ function testCopyImage() {
     }
 }
 
-@test:Config
-{
+@test:Config {
     dependsOn: ["testRunInstances"]
 }
 function testCreateVolume() {
@@ -230,8 +223,7 @@ function testCreateVolume() {
     }
 }
 
-@test:Config
-{
+@test:Config {
     dependsOn: ["testCreateVolume"]
 }
 function testAttachVolume() {
@@ -251,8 +243,7 @@ function testAttachVolume() {
     }
 }
 
-@test:Config
-{
+@test:Config {
     dependsOn: ["testAttachVolume"]
 }
 function testDetachVolume() {
@@ -272,8 +263,7 @@ function testDetachVolume() {
     }
 }
 
-@test:Config
-{
+@test:Config {
     dependsOn:["testDetachVolume"]
 }
 function testTerminateInstances() {
@@ -294,8 +284,7 @@ function testTerminateInstances() {
     }
 }
 
-@test:Config
-{
+@test:Config {
     dependsOn: ["testTerminateInstances"]
 }
 function testDeleteSecurityGroup() {
