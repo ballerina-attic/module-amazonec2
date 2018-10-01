@@ -92,29 +92,29 @@ public type AmazonEC2Connector object {
     # + minCount - The minimum number of instances to launch
     # + securityGroup - [EC2-Classic, default VPC] One or more security group names
     # + securityGroupId - One or more security group IDs
-    # + return - If success, returns EC2Instance of launched instances, else returns AmazonEC2Error object.
+    # + return - If success, returns EC2Instance of launched instances, else returns AmazonEC2Error object
     public function runInstances(string imgId, int maxCount, int minCount, string[]? securityGroup = (),
                                  string[]? securityGroupId = ()) returns EC2Instance[]|AmazonEC2Error;
 
     # Describes one or more of your instances.
     # + instanceIds -  Array of instanceIds to describe those
-    # + return - If successful, returns EC2Instance[] with zero or more instances, else returns an AmazonEC2Error.
+    # + return - If successful, returns EC2Instance[] with zero or more instances, else returns an AmazonEC2Error
     public function describeInstances(string... instanceIds) returns EC2Instance[]|AmazonEC2Error;
 
     # Shuts down one or more instances.
     # + instanceArray -  Array of instanceIds to terminate those
-    # + return - If success, returns EC2Instance with terminated instances, else returns AmazonEC2Error object.
+    # + return - If success, returns EC2Instance with terminated instances, else returns AmazonEC2Error object
     public function terminateInstances(string... instanceArray) returns EC2Instance[]|AmazonEC2Error;
 
     # Create image.
     # + instanceId -  The ID of the instance which is created with the particular image id
     # + name - The name of the image
-    # + return - If successful, returns Image with image id, else returns an AmazonEC2Error.
+    # + return - If successful, returns Image with image id, else returns an AmazonEC2Error
     public function createImage(string instanceId, string name) returns Image|AmazonEC2Error;
 
     # Describe images.
     # + imgIdArr -  The string of AMI array to describe those images.
-    # + return - If successful, returns Image[] with image details, else returns an AmazonEC2Error.
+    # + return - If successful, returns Image[] with image details, else returns an AmazonEC2Error
     public function describeImages(string... imgIdArr) returns Image[]|AmazonEC2Error;
 
     # Deregisters the specified AMI. After you deregister an AMI, it can't be used to launch new instances; however,
@@ -126,21 +126,21 @@ public type AmazonEC2Connector object {
     # Describes the specified attribute of the specified AMI. You can specify only one attribute at a time.
     # + amiId - The ID of the AMI
     # + attribute - The specific attribute of the image.
-    # + return - If successful, returns success response, else returns an AmazonEC2Error.
+    # + return - If successful, returns success response, else returns an AmazonEC2Error
     public function describeImageAttribute(string amiId, string attribute) returns ImageAttribute |AmazonEC2Error;
 
     # Initiates the copy of an AMI from the specified source region to the current region.
     # + name -  The name of the new AMI in the destination region
     # + sourceImageId - The ID of the AMI to copy
     # + sourceRegion - The name of the region that contains the AMI to copy
-    # + return - If successful, returns Image object, else returns an AmazonEC2Error.
+    # + return - If successful, returns Image object, else returns an AmazonEC2Error
     public function copyImage(string name, string sourceImageId, string sourceRegion) returns Image |AmazonEC2Error;
 
     # Creates a security group.
     # + groupName - The name of the security group
     # + groupDescription - A description for the security group
     # + vpcId - The ID of the VPC, Required for EC2-VPC
-    # + return - If successful, returns SecurityGroup object with groupId, else returns an AmazonEC2Error.
+    # + return - If successful, returns SecurityGroup object with groupId, else returns an AmazonEC2Error
     public function createSecurityGroup(string groupName, string groupDescription, string? vpcId = ())
                         returns SecurityGroup |AmazonEC2Error;
 
@@ -148,7 +148,7 @@ public type AmazonEC2Connector object {
     # But group id is required for a non default VPC.
     # + groupId -  The id of the security group
     # + groupName - The name of the security group
-    # + return - If successful, returns success response, else returns an AmazonEC2Error.
+    # + return - If successful, returns success response, else returns an AmazonEC2Error
     public function deleteSecurityGroup(string? groupId = (), string? groupName = ())
                         returns EC2ServiceResponse |AmazonEC2Error;
 
@@ -157,7 +157,7 @@ public type AmazonEC2Connector object {
     # + size - The size of the volume, in GiBs
     # + snapshotId - The snapshot from which to create the volume
     # + volumeType - The volume type
-    # + return - If successful, returns Volume object with created volume details, else returns an AmazonEC2Error.
+    # + return - If successful, returns Volume object with created volume details, else returns an AmazonEC2Error
     public function createVolume(string availabilityZone, int? size = (), string? snapshotId = (),
                                  string? volumeType = ()) returns Volume|AmazonEC2Error;
 
@@ -165,13 +165,13 @@ public type AmazonEC2Connector object {
     # + device - The device name
     # + instanceId - The ID of the instance
     # + volumeId - The ID of the EBS volume. The volume and instance must be within the same Availability Zone
-    # + return - If successful, returns Attachment information, else returns an AmazonEC2Error.
+    # + return - If successful, returns Attachment information, else returns an AmazonEC2Error
     public function attachVolume(string device, string instanceId, string volumeId) returns AttachmentInfo|AmazonEC2Error;
 
     # Detaches an EBS volume from an instance.
     # + force - Forces detachment if the previous detachment attempt did not occur cleanly
     # + volumeId - The ID of the volume
-    # + return - If successful, returns detached volume information, else returns an AmazonEC2Error.
+    # + return - If successful, returns detached volume information, else returns an AmazonEC2Error
     public function detachVolume(boolean force = false, string volumeId) returns AttachmentInfo|AmazonEC2Error;
 };
 
