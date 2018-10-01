@@ -297,7 +297,7 @@ To test the following sample, create `ballerina.conf` file inside `sample locati
 
 
 ## Example
-```
+```ballerina
 import ballerina/io;
 import wso2/amazonec2;
 import ballerina/runtime;
