@@ -1,9 +1,9 @@
-# Ballerina Amazon ec2 Connector Test
+# Ballerina Amazon EC2 Connector Test
 
-The Amazon ec2 connector allows you to access the Amazon ec2 REST API through ballerina.
+The Amazon EC2 connector allows you to access the Amazon EC2 REST API through ballerina.
 
 ## Compatibility
-| Ballerina Version | Amazon ec2 API Version |
+| Ballerina Version | Amazon EC2 API Version |
 |-------------------|----------------------  |
 | 0.982.0           | 2016-11-15             |
 

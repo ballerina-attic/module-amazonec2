@@ -1,8 +1,8 @@
-Connects to Amazon ec2 from Ballerina. 
+Connects to Amazon EC2 from Ballerina.
 
 # Package Overview
 
-The Amazon ec2 connector allows you to work with EC2 instances, security group, Image and Volume operations through the Amazon ec2 REST API.
+The Amazon EC2 connector allows you to work with EC2 instances, security group, Image and Volume operations through the Amazon EC2 REST API.
 
 **Instance Operations**
 
@@ -21,14 +21,14 @@ volume with these operations.
 
 **Image Operations**
 
-The `wso2/amazonec2` package contains operations that work with Amazon ec2 AMIs. You can create, describe, deRegister and copy the
+The `wso2/amazonec2` package contains operations that work with Amazon EC2 AMIs. You can create, describe, deRegister and copy the
 AMIs with these operations.
 
 ## Compatibility
 |                    |    Version     |
 |:------------------:|:--------------:|
 | Ballerina Language |   0.982.0      |
-| Amazon ec2 API     |   2016-11-15   |
+| Amazon EC2 API     |   2016-11-15   |
 
 ## Sample
 
@@ -37,8 +37,8 @@ First, import the `wso2/amazonec2` package into the Ballerina project.
 ```ballerina
 import wso2/amazonec2;
 ```
-The Amazon ec2 connector can be instantiated using the accessKeyId, secretAccessKey and region,
-in the Amazon ec2 client config.
+The Amazon EC2 connector can be instantiated using the accessKeyId, secretAccessKey and region,
+in the Amazon EC2 client config.
 
 **Obtaining Access Keys to Run the Sample**
 
@@ -48,7 +48,7 @@ in the Amazon ec2 client config.
    * Secret access key.
    * Desired Server region.
 
-You can now enter the credentials in the Amazon ec2 client config:
+You can now enter the credentials in the Amazon EC2 client config:
 ```ballerina
 endpoint amazonec2:Client amazonEC2Client {
     accessKeyId:"<your_access_key_id>",
