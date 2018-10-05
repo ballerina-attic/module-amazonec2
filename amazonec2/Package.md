@@ -230,13 +230,13 @@ It returns an true as an service response if it is successful or the response is
         amazonec2:AmazonEC2Error e => io:println(e);
     }
 ```
-## Example
+## Example 1
 ```ballerina
 import ballerina/io;
 import wso2/amazonec2;
 import ballerina/runtime;
 
-function main(string... args) {
+public function main(string... args) {
     endpoint amazonec2:Client amazonEC2Client {
         accessKeyId: "",
         secretAccessKey: "",
@@ -245,7 +245,7 @@ function main(string... args) {
     };
 
     amazonec2:EC2Instance[] arr;
-    string imgId = "ami-0ce0c1ehg8bebc34";
+    string imgId = "ami-0d5b";
 
     var newInstances = amazonEC2Client->runInstances(imgId, 1, 1);
     match newInstances {
@@ -259,7 +259,7 @@ function main(string... args) {
 
     runtime:sleep(20000); // wait for a bit before terminating the new instance
 
-    string[] instIds = arr.map(function (EC2Instance inst) returns (string) {return inst.id;});
+    string[] instIds = arr.map(function (amazonec2:EC2Instance inst) returns (string) {return inst.id;});
 
     var describeInstances = amazonEC2Client->describeInstances(instIds[0]);
     match describeInstances {
@@ -296,14 +296,14 @@ To test the following sample, create `ballerina.conf` file inside `sample locati
 ```
 
 
-## Example
+## Example 2
 ```ballerina
 import ballerina/io;
 import wso2/amazonec2;
 import ballerina/runtime;
 import ballerina/config;
 
-function main(string... args) {
+public function main(string... args) {
     string accessKeyId = config:getAsString("ACCESS_KEY_ID");
     string secretAccessKey = config:getAsString("SECRET_ACCESS_KEY");
     string region = config:getAsString("REGION");
@@ -314,8 +314,7 @@ function main(string... args) {
     string imageName = "Test Ballerina AMI"; // Rename the image name if you wanted create a AMI with different name.
     string deviceName = "/dev/sdh"; // The device name (for example, /dev/sdh or xvdh).
 
-    callAmazonEC2Methods(accessKeyId, secretAccessKey, region, imageId, groupName,
-        deviceName, imageName, sourceImageId, sourceRegion);
+    callAmazonEC2Methods(accessKeyId, secretAccessKey, region, imageId, groupName, deviceName, imageName, sourceImageId, sourceRegion);
 }
 
 function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string region,
@@ -329,6 +328,8 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
     };
     amazonec2:EC2Instance[] arr;
     string testGroupId;
+    string zoneName;
+    string[] instIds;
 
     var newSecurityGroup = amazonEC2Client->createSecurityGroup(groupName, "Test Ballerina Group in AmazonEC2 instance");
     match newSecurityGroup {
@@ -346,12 +347,14 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println("Successfully run the instance : ");
             io:println(insts);
             arr = insts;
+            instIds = arr.map(function (amazonec2:EC2Instance inst) returns (string) {return inst.id;});
+            zoneName = insts[0].zone;
         }
         amazonec2:AmazonEC2Error e => io:println(e);
     }
 
-    string[] instIds = arr.map(function (EC2Instance inst) returns (string) {return inst.id;});
-    string zoneName = insts[0].zone;
+
+
 
     runtime:sleep(60000); // wait a bit until launch an instance.
 
