@@ -12,7 +12,7 @@ The following section provide you the details on connector operations.
 The following sections provide you with information on how to use the Ballerina Amazon EC2 connector.
 
 - [Contribute To Develop](#contribute-to-develop)
-- [Working with Amazon EC2 Connector Actions](#working-with-Amazon-EC2-Connector)
+- [Working with Amazon EC2 Connector Actions](#Working-with-Amazon-EC2-Connector)
 - [Sample](#sample)
 
 ### Contribute To develop
