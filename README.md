@@ -6,7 +6,7 @@ The following section provide you the details on connector operations.
 ## Compatibility
 | Ballerina Language Version | Amazon EC2 API version  |
 | -------------------------- | --------------------   |
-| 0.982.0                    | 2016-11-15             |
+| 0.983.0                    | 2016-11-15             |
 
 
 The following sections provide you with information on how to use the Ballerina Amazon EC2 connector.
@@ -19,12 +19,12 @@ The following sections provide you with information on how to use the Ballerina 
 
 Clone the repository by running the following command 
 ```shell
-git clone https://github.com/wso2-ballerina/package-amazonec2.git
+git clone https://github.com/wso2-ballerina/module-amazonec2.git
 ```
 
 ### Working with Amazon EC2 Connector
 
-First, import the `wso2/amazonec2` package into the Ballerina project.
+First, import the `wso2/amazonec2` module into the Ballerina project.
 
 ```ballerina
 import wso2/amazonec2;

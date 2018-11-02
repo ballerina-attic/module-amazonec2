@@ -24,7 +24,7 @@ function getInstanceList(xml response) returns EC2Instance[] {
 
         foreach inst in instances["instancesSet"]["item"] {
             list[i] = getInstance(inst.elements());
-            i++;
+            i = i+1;
         }
     }
 
@@ -38,7 +38,7 @@ function getSpawnedInstancesList(xml response) returns EC2Instance[] {
 
     foreach inst in spawnedInstances {
         list[i] = getInstance(inst.elements());
-        i++;
+        i = i+1;
     }
 
     return list;
@@ -56,7 +56,7 @@ function getTerminatedInstancesList(xml response) returns EC2Instance[] {
         instance.state = getInstanceState(check <int>content["currentState"]["code"].getTextValue());
         instance.previousState = getInstanceState(check <int>content["previousState"]["code"].getTextValue());
         list[i] = instance;
-        i++;
+        i = i+1;
     }
 
     return list;
@@ -98,7 +98,7 @@ function getSpawnedImageList(xml response) returns  Image[] {
     xml imageList = response["imagesSet"]["item"];
     foreach inst in imageList {
         image[i] = getImage(inst.elements());
-        i++;
+        i = i+1;
     }
     return image;
 }
@@ -218,7 +218,7 @@ function getImageWithLaunchPermissionAttribute(xml content) returns LaunchPermis
         permission.groupName = elements["group"].getTextValue();
         permission.userId = elements["userId"].getTextValue();
         launchPermissionAttribute[i] = permission;
-        i++;
+        i = i+1;
     }
     return launchPermissionAttribute;
 }
@@ -234,7 +234,7 @@ function getImageWithProductCodesAttribute(xml content) returns ProductCodeAttri
         code.productCode = elements["productCode"].getTextValue();
         code.productType = elements["type"].getTextValue();
         productCodeAttribute[i] = code;
-        i++;
+        i = i+1;
     }
     return productCodeAttribute;
 }
@@ -251,7 +251,7 @@ function getImageWithBlockDeviceMappingAttribute(xml content) returns BlockDevic
         mapping.noDevice = elements["noDevice"].getTextValue();
         mapping.virtualName = elements["virtualName"].getTextValue();
         blockDeviceMapping[i] = mapping;
-        i++;
+        i = i+1;
     }
     return blockDeviceMapping;
 }

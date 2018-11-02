@@ -20,15 +20,15 @@ import ballerina/io;
 import ballerina/time;
 
 
-# The supported instance state by this package.
+# The supported instance state by this module.
 
 public type InstanceState "pending"|"running"|"shutting-down"|"terminated"|"stopping"|"stopped";
 
-# The supported volume type by this package.
+# The supported volume type by this module.
 
 public type VolumeType "standard"|"io1"|"gp2"|"sc1"|"st1";
 
-# The supported volume attachment status by this package.
+# The supported volume attachment status by this module.
 
 public type VolumeAttachmentStatus "attaching"|"attached"|"detaching"|"detached"|"busy";
 

@@ -254,7 +254,7 @@ function AmazonEC2Connector::describeImages(string... imgIdArr) returns Image[]|
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
+    var httpResponse = clientEndpoint->get(untaint constructCanonicalString, message = request);
     match httpResponse {
         error err => {
             amazonEC2Error.message = err.message;
