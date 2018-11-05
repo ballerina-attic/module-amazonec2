@@ -1,38 +1,38 @@
 Connects to Amazon EC2 from Ballerina.
 
-# Package Overview
+# Module Overview
 
 The Amazon EC2 connector allows you to work with EC2 instances, security group, Image and Volume operations through the Amazon EC2 REST API.
 
 **Instance Operations**
 
-The `wso2/amazonec2` package contains operations that work with instances. You can launch, describe, and terminate the
+The `wso2/amazonec2` module contains operations that work with instances. You can launch, describe, and terminate the
 instances with these operations.
 
 **Security Group Operations**
 
-The `wso2/amazonec2` package contains operations that work with security groups. You can create and delete the
+The `wso2/amazonec2` module contains operations that work with security groups. You can create and delete the
 security groups with these operations.
 
 **Volume Operations**
 
-The `wso2/amazonec2` package contains operations that work with Volume. You can create, attach and detach the
+The `wso2/amazonec2` module contains operations that work with Volume. You can create, attach and detach the
 volume with these operations.
 
 **Image Operations**
 
-The `wso2/amazonec2` package contains operations that work with Amazon EC2 AMIs. You can create, describe, deRegister and copy the
+The `wso2/amazonec2` module contains operations that work with Amazon EC2 AMIs. You can create, describe, deRegister and copy the
 AMIs with these operations.
 
 ## Compatibility
 |                    |    Version     |
 |:------------------:|:--------------:|
-| Ballerina Language |   0.982.0      |
+| Ballerina Language |   0.983.0      |
 | Amazon EC2 API     |   2016-11-15   |
 
 ## Sample
 
-First, import the `wso2/amazonec2` package into the Ballerina project.
+First, import the `wso2/amazonec2` module into the Ballerina project.
 
 ```ballerina
 import wso2/amazonec2;
