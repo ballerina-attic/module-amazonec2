@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/wso2-ballerina/module-amazonec2.svg?branch=master)](https://travis-ci.org/wso2-ballerina/module-amazonec2)
+
 # Ballerina Amazon EC2 Connector
 
 The Amazon EC2 connector allows you to access the Amazon EC2 REST API through ballerina.
