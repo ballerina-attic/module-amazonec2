@@ -52,7 +52,7 @@ function testCreateSecurityGroup() {
             testGroupId = securityGroup.groupId;
             test:assertNotEquals(securityGroup.groupId , null, msg = "Failed to create the security group");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -75,7 +75,7 @@ function testRunInstances() {
             testZoneName = insts[0].zone;
             test:assertNotEquals(testInstanceIds[0], null, msg = "Failed to run the instances");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -96,7 +96,7 @@ function testDescribeInstances() {
             string instanceId = reservations[0].id;
             test:assertNotEquals(instanceId, null, msg = "Failed to describeInstances");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -117,7 +117,7 @@ function testCreateImage() {
             imgIds = [image_id];
             test:assertNotEquals(image_id , null, msg = "Failed to create the image");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -138,7 +138,7 @@ function testDescribeImages() {
             string imageId = image[0].imageId;
             test:assertNotEquals(imageId, null, msg = "Failed to describe the images");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -157,7 +157,7 @@ function testDescribeImageAttribute() {
             io:println(attribute);
             test:assertNotEquals(attribute, null, msg = "Failed to describe an image with an attribute");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -177,7 +177,7 @@ function testDeRegisterImage() {
             boolean success = serviceResponse.success;
             test:assertTrue(success, msg = "Failed to de register the image");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -196,7 +196,7 @@ function testCopyImage() {
             io:println(image);
             test:assertNotEquals(image.imageId , null, msg = "Failed to copy the image");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -216,7 +216,7 @@ function testCreateVolume() {
             testVolumeId = volume.volumeId;
             test:assertNotEquals(volume.volumeId, null, msg = "Failed to create a volume");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -236,7 +236,7 @@ function testAttachVolume() {
             io:println(attachment);
             test:assertNotEquals(attachment.volumeId, null, msg = "Failed to attach the volume");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -256,7 +256,7 @@ function testDetachVolume() {
             io:println(attachment);
             test:assertNotEquals(attachment.volumeId, null, msg = "Failed to detach the volume");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -277,7 +277,7 @@ function testTerminateInstances() {
             string instanceId = (instance[0].id);
             test:assertNotEquals(instanceId, null, msg = "Failed to terminate the instances");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }
@@ -298,7 +298,7 @@ function testDeleteSecurityGroup() {
             boolean success = serviceResponse.success;
             test:assertTrue(success, msg = "Failed to delete a security group");
         }
-        AmazonEC2Error err => {
+        error err => {
             io:println(err);
             test:assertFail(msg = err.message);
         }

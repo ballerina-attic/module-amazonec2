@@ -61,7 +61,7 @@ function main(string... args) {
              io:println(" Successfully describe the instances : ");
              io:println(insts);
          }
-         amazonec2:AmazonEC2Error e => io:println(e);
+         amazonec2:error e => io:println(e);
    }
 }
 ```

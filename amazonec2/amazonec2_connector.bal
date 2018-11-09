@@ -20,14 +20,13 @@ import ballerina/time;
 import ballerina/crypto;
 
 function AmazonEC2Connector::runInstances(string imgId, int maxCount, int minCount, string[]? securityGroup = (),
-                                          string[]? securityGroupId = ()) returns EC2Instance[]|AmazonEC2Error {
+                                          string[]? securityGroupId = ()) returns EC2Instance[]|error {
 
     endpoint http:Client clientEndpoint = self.clientEndpoint;
     string[] groupNames;
     string[] groupIds;
     match securityGroup {string[] names => groupNames = names;() => groupNames = [];}
     match securityGroupId {string[] ids => groupIds = ids;() => groupIds = [];}
-    AmazonEC2Error amazonEC2Error = {};
     string httpMethod = "GET";
     string requestURI = "/";
     string host = SERVICE_NAME + "." + self.region + "." + "amazonaws.com";
@@ -60,25 +59,20 @@ function AmazonEC2Connector::runInstances(string imgId, int maxCount, int minCou
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'runInstances' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
                         return getSpawnedInstancesList(xmlResponse);
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -86,10 +80,9 @@ function AmazonEC2Connector::runInstances(string imgId, int maxCount, int minCou
     }
 }
 
-function AmazonEC2Connector::describeInstances(string... instanceIds) returns EC2Instance[]|AmazonEC2Error {
+function AmazonEC2Connector::describeInstances(string... instanceIds) returns EC2Instance[]|error {
 
     endpoint http:Client clientEndpoint = self.clientEndpoint;
-    AmazonEC2Error amazonEC2Error = {};
     string httpMethod = "GET";
     string requestURI = "/";
     string host = SERVICE_NAME + "." + self.region + "." + "amazonaws.com";
@@ -111,25 +104,20 @@ function AmazonEC2Connector::describeInstances(string... instanceIds) returns EC
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'describeInstances' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
                         return getInstanceList(xmlResponse);
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -137,10 +125,9 @@ function AmazonEC2Connector::describeInstances(string... instanceIds) returns EC
     }
 }
 
-function AmazonEC2Connector::terminateInstances(string... instanceArray) returns EC2Instance[]|AmazonEC2Error {
+function AmazonEC2Connector::terminateInstances(string... instanceArray) returns EC2Instance[]|error {
 
     endpoint http:Client clientEndpoint = self.clientEndpoint;
-    AmazonEC2Error amazonEC2Error = {};
     string httpMethod = "GET";
     string requestURI = "/";
     string host = SERVICE_NAME + "." + self.region + "." + "amazonaws.com";
@@ -159,25 +146,20 @@ function AmazonEC2Connector::terminateInstances(string... instanceArray) returns
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
     error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'terminateInstances' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
                         return getTerminatedInstancesList(xmlResponse);
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -185,9 +167,8 @@ function AmazonEC2Connector::terminateInstances(string... instanceArray) returns
     }
 }
 
-function AmazonEC2Connector::createImage(string instanceId, string name) returns Image|AmazonEC2Error {
+function AmazonEC2Connector::createImage(string instanceId, string name) returns Image|error {
     endpoint http:Client clientEndpoint = self.clientEndpoint;
-    AmazonEC2Error amazonEC2Error = {};
     string httpMethod = "GET";
     string requestURI = "/";
     string host = SERVICE_NAME + "." + self.region + "." + "amazonaws.com";
@@ -205,18 +186,14 @@ function AmazonEC2Connector::createImage(string instanceId, string name) returns
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'createImage' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
@@ -224,8 +201,7 @@ function AmazonEC2Connector::createImage(string instanceId, string name) returns
                           image.imageId = xmlResponse["imageId"].getTextValue();
                           return image;
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -233,9 +209,8 @@ function AmazonEC2Connector::createImage(string instanceId, string name) returns
     }
 }
 
-function AmazonEC2Connector::describeImages(string... imgIdArr) returns Image[]|AmazonEC2Error {
+function AmazonEC2Connector::describeImages(string... imgIdArr) returns Image[]|error {
     endpoint http:Client clientEndpoint = self.clientEndpoint;
-    AmazonEC2Error amazonEC2Error = {};
     string httpMethod = "GET";
     string requestURI = "/";
     string host = SERVICE_NAME + "." + self.region + "." + "amazonaws.com";
@@ -257,25 +232,20 @@ function AmazonEC2Connector::describeImages(string... imgIdArr) returns Image[]|
     var httpResponse = clientEndpoint->get(untaint constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'describeImages' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
                         return getSpawnedImageList(xmlResponse);
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -283,9 +253,8 @@ function AmazonEC2Connector::describeImages(string... imgIdArr) returns Image[]|
     }
 }
 
-function AmazonEC2Connector::deRegisterImage(string imgId) returns EC2ServiceResponse |AmazonEC2Error {
+function AmazonEC2Connector::deRegisterImage(string imgId) returns EC2ServiceResponse |error {
     endpoint http:Client clientEndpoint = self.clientEndpoint;
-    AmazonEC2Error amazonEC2Error = {};
     string httpMethod = "GET";
     string requestURI = "/";
     string host = SERVICE_NAME + "." + self.region + "." + "amazonaws.com";
@@ -300,18 +269,14 @@ function AmazonEC2Connector::deRegisterImage(string imgId) returns EC2ServiceRes
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'deRegisterImage' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
@@ -319,8 +284,7 @@ function AmazonEC2Connector::deRegisterImage(string imgId) returns EC2ServiceRes
                         serviceResponse.success = <boolean> xmlResponse["return"].getTextValue();
                         return serviceResponse;
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -329,9 +293,8 @@ function AmazonEC2Connector::deRegisterImage(string imgId) returns EC2ServiceRes
 }
 
 function AmazonEC2Connector::describeImageAttribute(string amiId, string attribute)
-                                 returns ImageAttribute|AmazonEC2Error {
+                                 returns ImageAttribute|error {
     endpoint http:Client clientEndpoint = self.clientEndpoint;
-    AmazonEC2Error amazonEC2Error = {};
     string httpMethod = "GET";
     string requestURI = "/";
     string host = SERVICE_NAME + "." + self.region + "." + "amazonaws.com";
@@ -346,25 +309,20 @@ function AmazonEC2Connector::describeImageAttribute(string amiId, string attribu
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'describeImageAttribute' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
                         return getAttributeValue(attribute,xmlResponse);
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -373,9 +331,8 @@ function AmazonEC2Connector::describeImageAttribute(string amiId, string attribu
 }
 
 function AmazonEC2Connector::copyImage(string name, string sourceImageId, string sourceRegion)
-                                 returns Image |AmazonEC2Error {
+                                 returns Image |error {
     endpoint http:Client clientEndpoint = self.clientEndpoint;
-    AmazonEC2Error amazonEC2Error = {};
     string httpMethod = "GET";
     string requestURI = "/";
     string host = SERVICE_NAME + "." + self.region + "." + "amazonaws.com";
@@ -390,18 +347,14 @@ function AmazonEC2Connector::copyImage(string name, string sourceImageId, string
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'copyImage' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
@@ -409,8 +362,7 @@ function AmazonEC2Connector::copyImage(string name, string sourceImageId, string
                         image.imageId = xmlResponse["imageId"].getTextValue();
                         return image;
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -419,11 +371,10 @@ function AmazonEC2Connector::copyImage(string name, string sourceImageId, string
 }
 
 function AmazonEC2Connector::createSecurityGroup(string groupName, string groupDescription, string? vpcId = ())
-                                 returns SecurityGroup |AmazonEC2Error {
+                                 returns SecurityGroup |error {
     endpoint http:Client clientEndpoint = self.clientEndpoint;
     string vpc_id;
     match vpcId {string id => vpc_id = id;() => vpc_id = "";}
-    AmazonEC2Error amazonEC2Error = {};
     string httpMethod = "GET";
     string requestURI = "/";
     string host = SERVICE_NAME + "." + self.region + "." + "amazonaws.com";
@@ -444,18 +395,14 @@ function AmazonEC2Connector::createSecurityGroup(string groupName, string groupD
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'createSecurityGroup' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
@@ -463,8 +410,7 @@ function AmazonEC2Connector::createSecurityGroup(string groupName, string groupD
                         securityGroup.groupId = xmlResponse["groupId"].getTextValue();
                         return securityGroup;
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -473,9 +419,8 @@ function AmazonEC2Connector::createSecurityGroup(string groupName, string groupD
 }
 
 function AmazonEC2Connector::deleteSecurityGroup(string? groupId = (), string? groupName = ())
-                                 returns EC2ServiceResponse |AmazonEC2Error {
+                                 returns EC2ServiceResponse |error {
     endpoint http:Client clientEndpoint = self.clientEndpoint;
-    AmazonEC2Error amazonEC2Error = {};
     string group_id;
     string group_name;
     match groupId {string id => group_id = id;() => group_id = "";}
@@ -500,18 +445,14 @@ function AmazonEC2Connector::deleteSecurityGroup(string? groupId = (), string? g
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'deleteSecurityGroup' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
@@ -519,8 +460,7 @@ function AmazonEC2Connector::deleteSecurityGroup(string? groupId = (), string? g
                         serviceResponse.success = <boolean> xmlResponse["return"].getTextValue();
                         return serviceResponse;
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -529,9 +469,8 @@ function AmazonEC2Connector::deleteSecurityGroup(string? groupId = (), string? g
 }
 
 function AmazonEC2Connector::createVolume(string availabilityZone, int ? size = (), string ? snapshotId = (),
-                                          string? volumeType = ()) returns Volume|AmazonEC2Error {
+                                          string? volumeType = ()) returns Volume|error {
     endpoint http:Client clientEndpoint = self.clientEndpoint;
-    AmazonEC2Error amazonEC2Error = {};
     int volumeSize;
     string volumeSnapshotId;
     string Vtype;
@@ -561,25 +500,20 @@ function AmazonEC2Connector::createVolume(string availabilityZone, int ? size = 
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'createVolume' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
                      return getVolumeList(xmlResponse);
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -588,9 +522,8 @@ function AmazonEC2Connector::createVolume(string availabilityZone, int ? size = 
 }
 
 function AmazonEC2Connector::attachVolume(string device, string instanceId, string volumeId)
-                                 returns AttachmentInfo|AmazonEC2Error {
+                                 returns AttachmentInfo|error {
     endpoint http:Client clientEndpoint = self.clientEndpoint;
-    AmazonEC2Error amazonEC2Error = {};
     string httpMethod = "GET";
     string requestURI = "/";
     string host = SERVICE_NAME + "." + self.region + "." + "amazonaws.com";
@@ -605,25 +538,20 @@ function AmazonEC2Connector::attachVolume(string device, string instanceId, stri
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'attachVolume' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
                         return getVolumeAttachmentList(xmlResponse);
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
@@ -631,9 +559,8 @@ function AmazonEC2Connector::attachVolume(string device, string instanceId, stri
     }
 }
 
-function AmazonEC2Connector::detachVolume(boolean force = false, string volumeId) returns AttachmentInfo|AmazonEC2Error {
+function AmazonEC2Connector::detachVolume(boolean force = false, string volumeId) returns AttachmentInfo|error {
     endpoint http:Client clientEndpoint = self.clientEndpoint;
-    AmazonEC2Error amazonEC2Error = {};
     match force {boolean value => force = value;}
     string httpMethod = "GET";
     string requestURI = "/";
@@ -649,28 +576,29 @@ function AmazonEC2Connector::detachVolume(boolean force = false, string volumeId
     var httpResponse = clientEndpoint->get(constructCanonicalString, message = request);
     match httpResponse {
         error err => {
-            amazonEC2Error.message = err.message;
-            amazonEC2Error.cause = err.cause;
-            return amazonEC2Error;
+            return err;
         }
         http:Response response => {
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             match amazonResponse {
                 error err => {
-                    amazonEC2Error.message = "Error occured while extracting xml Payload for 'detachVolume' action";
-                    amazonEC2Error.cause = err.cause;
-                    return amazonEC2Error;
+                    return err;
                 }
                 xml xmlResponse => {
                     if (statusCode == 200) {
                         return getVolumeAttachmentList(xmlResponse);
                     } else {
-                        amazonEC2Error.message = xmlResponse["Message"].getTextValue();
-                        return amazonEC2Error;
+                        return setResponseError(xmlResponse);
                     }
                 }
             }
         }
     }
+}
+
+function setResponseError(xml xmlResponse) returns error {
+    error err = {};
+    err.message = xmlResponse["Message"].getTextValue();
+    return err;
 }
