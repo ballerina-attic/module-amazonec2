@@ -596,9 +596,3 @@ function AmazonEC2Connector::detachVolume(boolean force = false, string volumeId
         }
     }
 }
-
-function setResponseError(xml xmlResponse) returns error {
-    error err = {};
-    err.message = xmlResponse["Message"].getTextValue();
-    return err;
-}
