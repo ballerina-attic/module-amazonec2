@@ -338,7 +338,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(securityGroup);
             testGroupId = securityGroup.groupId;
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 
     var newInstances = amazonEC2Client->runInstances(imageId, 1, 1, securityGroupId = [testGroupId]);
@@ -350,7 +350,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             instIds = arr.map(function (amazonec2:EC2Instance inst) returns (string) {return inst.id;});
             zoneName = insts[0].zone;
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 
 
@@ -364,7 +364,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println("Successfully describe the instance : ");
             io:println(insts);
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 
     var newImage = amazonEC2Client->createImage(instIds[0], imageName);
@@ -375,7 +375,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             id = img.imageId;
             io:println(img);
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 
     runtime:sleep(60000);// wait until the image creates.
@@ -386,7 +386,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully de register the image : ");
             io:println(serviceResponse);
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 
     var describeImageResponse = amazonEC2Client->describeImages(imageId);
@@ -396,7 +396,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully describe the image : ");
             io:println(image);
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 
     var imageAttributeResponse = amazonEC2Client->describeImageAttribute(imageId, "description");
@@ -406,7 +406,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully describes an image with an attribute : ");
             io:println(attribute);
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 
     var copyImage = amazonEC2Client->copyImage("Copy_Image", sourceImageId, sourceRegion);
@@ -416,7 +416,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully copy the image to the current region : ");
             io:println(image);
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 
     var newVolume = amazonEC2Client->createVolume(zoneName, size = 8);
@@ -428,7 +428,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             volumeId = volume.volumeId;
             io:println(volume);
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 
     runtime:sleep(60000);// wait for a bit before attaching to a new volume until it creates.
@@ -440,7 +440,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully attaches volume : ");
             io:println(attachment);
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 
     runtime:sleep(60000); // wait for a bit before detaching the new volume until the attachment completes.
@@ -451,7 +451,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully detach the volume : ");
             io:println(detachInfo);
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 
     var terminated = amazonEC2Client->terminateInstances(instIds[0]);
@@ -474,7 +474,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully  delete the security group : ");
             io:println(serviceResponse);
         }
-        amazonec2:error e => io:println(e);
+        error e => io:println(e);
     }
 }
 ```

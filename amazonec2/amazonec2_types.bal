@@ -92,7 +92,7 @@ public type AmazonEC2Connector object {
     # + minCount - The minimum number of instances to launch
     # + securityGroup - [EC2-Classic, default VPC] One or more security group names
     # + securityGroupId - One or more security group IDs
-    # + return - If success, returns EC2Instance of launched instances, else returns error object
+    # + return - If success, returns EC2Instance of launched instances, else returns error
     public function runInstances(string imgId, int maxCount, int minCount, string[]? securityGroup = (),
                                  string[]? securityGroupId = ()) returns EC2Instance[]|error;
 
@@ -103,7 +103,7 @@ public type AmazonEC2Connector object {
 
     # Shuts down one or more instances.
     # + instanceArray -  Array of instanceIds to terminate those
-    # + return - If success, returns EC2Instance with terminated instances, else returns error object
+    # + return - If success, returns EC2Instance with terminated instances, else returns error
     public function terminateInstances(string... instanceArray) returns EC2Instance[]|error;
 
     # Create image.
@@ -143,7 +143,8 @@ public type AmazonEC2Connector object {
     public function createSecurityGroup(string groupName, string groupDescription, string? vpcId = ())
                         returns SecurityGroup |error;
 
-    # Deletes a security group. Can specify either the security group name or the security group ID, But group id is required for a non default VPC.
+    # Deletes a security group. Can specify either the security group name or the security group ID,
+    # But group id is required for a non default VPC.
     # + groupId -  The id of the security group
     # + groupName - The name of the security group
     # + return - If successful, returns success response, else returns an error
@@ -159,7 +160,8 @@ public type AmazonEC2Connector object {
     public function createVolume(string availabilityZone, int? size = (), string? snapshotId = (),
                                  string? volumeType = ()) returns Volume|error;
 
-    # Attaches an EBS volume to a running or stopped instance and exposes it to the instance with the specified device name.
+    # Attaches an EBS volume to a running or stopped instance and exposes it to the instance with the specified
+    # device name.
     # + device - The device name
     # + instanceId - The ID of the instance
     # + volumeId - The ID of the EBS volume, The volume and instance must be within the same Availability Zone
