@@ -142,3 +142,9 @@ function generateSignature(http:Request request, string accessKeyId, string secr
     authHeader = authHeader + crypto:hmac(stringToSign, signingKey, keyEncoding = "BASE64", crypto:SHA256).toLower();
     request.setHeader(AUTHORIZATION, authHeader);
 }
+
+function setResponseError(xml xmlResponse) returns error {
+    error err = {};
+    err.message = xmlResponse["Message"].getTextValue();
+    return err;
+}

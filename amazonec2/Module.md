@@ -62,7 +62,7 @@ You can specify the maximum number of instances to launch and the minimum number
    `var runInstancesResponse = amazonEC2Client->runInstances(imgId, maxCount, minCount);`
 
 If the instance started successfully, the response from the `runInstances` function is a `EC2Instance` array with
-one or more launched instance ids. If it is unsuccessful, the response is a `AmazonEC2Error`.
+one or more launched instance ids. If it is unsuccessful, the response is a `error`.
 The `match` operation can be used to handle the response if an error occurs.
 
 ```ballerina
@@ -71,12 +71,12 @@ The `match` operation can be used to handle the response if an error occurs.
             io:println("Successfully run the instance : ");
             io:println(insts);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 ```
 
 The `describeInstances` function describes one or more of your instances. It returns a `EC2Instance` array
-with reservation ids if it is successful or the response is a `AmazonEC2Error`.
+with reservation ids if it is successful or the response is a `error`.
 
 ```ballerina
   match describeInstances {
@@ -84,11 +84,11 @@ with reservation ids if it is successful or the response is a `AmazonEC2Error`.
             io:println("Successfully describe the instance : ");
             io:println(insts);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 ```
 The `terminateInstances` function shuts down one or more instances. It returns a `EC2Instance` array
-with terminated instance ids if it is successful or the response is a `AmazonEC2Error`.
+with terminated instance ids if it is successful or the response is a `error`.
 
 ```ballerina
 match terminated {
@@ -96,12 +96,12 @@ match terminated {
             io:println("Successfully terminate the instance : ");
             io:println(insts);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 ```
 
 The `createImage` function will create an image. It returns a `Image` object
-with created image id if it is successful or the response is a `AmazonEC2Error`.
+with created image id if it is successful or the response is a `error`.
 
 ```ballerina
 match newImage {
@@ -109,12 +109,12 @@ match newImage {
             io:println(" Successfully create a new image : ");
             io:println(img);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 ```
 
 The `describeImages` function will describe the images . It returns an `Image` array
-with image details if it is successful or the response is a `AmazonEC2Error`.
+with image details if it is successful or the response is a `error`.
 
 ```ballerina
 match describeImageResponse {
@@ -122,11 +122,11 @@ match describeImageResponse {
             io:println(" Successfully describe the image : ");
             io:println(image);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 ```
 
-The `describeImageAttribute` function will describe an image with specified attributes . It returns an `ImageAttribute` response based on the attribute name if it is successful or the response is a `AmazonEC2Error`.
+The `describeImageAttribute` function will describe an image with specified attributes . It returns an `ImageAttribute` response based on the attribute name if it is successful or the response is a `error`.
 
 ```ballerina
 match imageAttributeResponse {
@@ -134,14 +134,14 @@ match imageAttributeResponse {
             io:println(" Successfully describes an image with an attribute : ");
             io:println(attribute);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 ```
 
 The `deRegisterImage` function will deregisters the specified AMI.
 After you deregister an AMI, it can't be used to launch new instances;
 however,it doesn't affect any instances that you've already launched from the AMI.
-It returns true as a service response if it is successful or the response is a `AmazonEC2Error`.
+It returns true as a service response if it is successful or the response is a `error`.
 
 ```ballerina
 match deRegisterImage {
@@ -149,12 +149,12 @@ match deRegisterImage {
             io:println(" Successfully de register the image : ");
             io:println(serviceResponse);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
 ```
 The `copyImage` function will Initiates the copy of an AMI from the specified source region to the current region.
- It returns an `Image` object with copied image details if it is successful or the response is a `AmazonEC2Error`.
+ It returns an `Image` object with copied image details if it is successful or the response is a `error`.
 
 ```ballerina
 match copyImage {
@@ -162,11 +162,11 @@ match copyImage {
             io:println(" Successfully copy the image to the current region : ");
             io:println(image);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 ```
 The `createVolume` creates an EBS volume that can be attached to an instance in the same Availability Zone.
- It returns `Volume` object with created volume details if it is successful or the response is a `AmazonEC2Error`.
+ It returns `Volume` object with created volume details if it is successful or the response is a `error`.
 
 ```ballerina
 match newVolume {
@@ -174,12 +174,12 @@ match newVolume {
             io:println(" Successfully create a new volume : ");
             io:println(volume);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 ```
 
 The `attachVolume` attaches an EBS volume to a running or stopped instance and exposes it to the instance with the specified device name.
- It returns an `AttachmentInfo` object with attachment details if it is successful or the response is a `AmazonEC2Error`.
+ It returns an `AttachmentInfo` object with attachment details if it is successful or the response is a `error`.
 
 ```ballerina
 match attachmentInfo {
@@ -187,11 +187,11 @@ match attachmentInfo {
             io:println(" Successfully attaches volume : ");
             io:println(attachment);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 ```
 The `detachVolume` detaches an EBS volume from an instance.
- It returns an `AttachmentInfo` object with specified details if it is successful or the response is a `AmazonEC2Error`.
+ It returns an `AttachmentInfo` object with specified details if it is successful or the response is a `error`.
 
 ```ballerina
   match detachmentInfo {
@@ -199,12 +199,12 @@ The `detachVolume` detaches an EBS volume from an instance.
             io:println(" Successfully detach the volume : ");
             io:println(detachInfo);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 ```
 
 The `createSecurityGroup` creates a security group.
-It returns `SecurityGroup` object with group id if it is successful or the response is a `AmazonEC2Error`.
+It returns `SecurityGroup` object with group id if it is successful or the response is a `error`.
 
 ```ballerina
     match newSecurityGroup {
@@ -212,14 +212,14 @@ It returns `SecurityGroup` object with group id if it is successful or the respo
              io:println(" Successfully create a new security group : ");
              io:println(securityGroup);
          }
-         amazonec2:AmazonEC2Error e => io:println(e);
+         error e => io:println(e);
      }
 
 ```
 
 The `deleteSecurityGroup` deletes a security group. Can specify either the security group name or the security group ID.
 But group id is required for a non default VPC.
-It returns an true as an service response if it is successful or the response is a `AmazonEC2Error`.
+It returns an true as an service response if it is successful or the response is a `error`.
 
 ```ballerina
     match deleteSecurityGroupResponse {
@@ -227,7 +227,7 @@ It returns an true as an service response if it is successful or the response is
             io:println(" Successfully  delete the security group : ");
             io:println(serviceResponse);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 ```
 ## Example 1
@@ -254,7 +254,7 @@ public function main(string... args) {
             io:println(insts);
             arr = insts;
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     runtime:sleep(20000); // wait for a bit before terminating the new instance
@@ -267,7 +267,7 @@ public function main(string... args) {
             io:println("Successfully describe the instance : ");
             io:println(insts);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     var terminated = amazonEC2Client->terminateInstances(instIds[0]);
@@ -277,7 +277,7 @@ public function main(string... args) {
             io:println("Successfully terminate the instance : ");
             io:println(insts);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 }
 ```
@@ -338,7 +338,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(securityGroup);
             testGroupId = securityGroup.groupId;
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     var newInstances = amazonEC2Client->runInstances(imageId, 1, 1, securityGroupId = [testGroupId]);
@@ -350,7 +350,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             instIds = arr.map(function (amazonec2:EC2Instance inst) returns (string) {return inst.id;});
             zoneName = insts[0].zone;
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
 
@@ -364,7 +364,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println("Successfully describe the instance : ");
             io:println(insts);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     var newImage = amazonEC2Client->createImage(instIds[0], imageName);
@@ -375,7 +375,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             id = img.imageId;
             io:println(img);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     runtime:sleep(60000);// wait until the image creates.
@@ -386,7 +386,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully de register the image : ");
             io:println(serviceResponse);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     var describeImageResponse = amazonEC2Client->describeImages(imageId);
@@ -396,7 +396,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully describe the image : ");
             io:println(image);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     var imageAttributeResponse = amazonEC2Client->describeImageAttribute(imageId, "description");
@@ -406,7 +406,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully describes an image with an attribute : ");
             io:println(attribute);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     var copyImage = amazonEC2Client->copyImage("Copy_Image", sourceImageId, sourceRegion);
@@ -416,7 +416,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully copy the image to the current region : ");
             io:println(image);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     var newVolume = amazonEC2Client->createVolume(zoneName, size = 8);
@@ -428,7 +428,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             volumeId = volume.volumeId;
             io:println(volume);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     runtime:sleep(60000);// wait for a bit before attaching to a new volume until it creates.
@@ -440,7 +440,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully attaches volume : ");
             io:println(attachment);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     runtime:sleep(60000); // wait for a bit before detaching the new volume until the attachment completes.
@@ -451,7 +451,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully detach the volume : ");
             io:println(detachInfo);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
     var terminated = amazonEC2Client->terminateInstances(instIds[0]);
@@ -461,7 +461,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println("Successfully terminate the instance : ");
             io:println(insts);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 
 
@@ -474,7 +474,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
             io:println(" Successfully  delete the security group : ");
             io:println(serviceResponse);
         }
-        amazonec2:AmazonEC2Error e => io:println(e);
+        error e => io:println(e);
     }
 }
 ```
