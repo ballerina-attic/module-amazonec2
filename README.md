@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/wso2-ballerina/module-amazonec2.svg?branch=master)](https://travis-ci.org/wso2-ballerina/module-amazonec2)
-
 # Ballerina Amazon EC2 Connector
 
 The Amazon EC2 connector allows you to access the Amazon EC2 REST API through ballerina.
@@ -8,7 +6,7 @@ The following section provide you the details on connector operations.
 ## Compatibility
 | Ballerina Language Version | Amazon EC2 API version  |
 | -------------------------- | --------------------   |
-| 0.983.0                    | 2016-11-15             |
+| 0.990.0                    | 2016-11-15             |
 
 
 The following sections provide you with information on how to use the Ballerina Amazon EC2 connector.
@@ -35,12 +33,14 @@ import wso2/amazonec2;
 In order for you to use the Amazon EC2 Connector, first you need to create a Amazon EC2 Client endpoint.
 
 ```ballerina
-   endpoint amazonec2:Client amazonEC2Client {
-        accessKeyId: "",
-        secretAccessKey: "",
-        region: "",
-        clientConfig:{}
-    };
+amazonec2:AmazonEC2Configuration amazonec2Config = {
+    accessKeyId: "",
+    secretAccessKey: "",
+    region: "",
+    clientConfig:{}
+};
+   
+   amazonec2:Client amazonEC2Client = new(amazonec2Config);
 ```
 
 ##### Sample
@@ -49,21 +49,23 @@ In order for you to use the Amazon EC2 Connector, first you need to create a Ama
 import ballerina/io;
 import wso2/amazonec2;
 
-function main(string... args) {
-    endpoint amazonec2:Client amazonEC2Client {
-        accessKeyId: "",
-        secretAccessKey: "",
-        region: "",
-        clientConfig:{}
-    };
+amazonec2:AmazonEC2Configuration amazonec2Config = {
+    accessKeyId: "",
+    secretAccessKey: "",
+    region: "",
+    clientConfig:{}
+};
+
+amazonec2:Client amazonEC2Client = new(amazonec2Config);
+
+public function main() {
 
    var describeInstancesResponse = amazonEC2Client->describeInstances();
-   match describeInstancesResponse {
-         amazonec2:EC2Instance[] insts => {
-             io:println(" Successfully describe the instances : ");
-             io:println(insts);
-         }
-         error e => io:println(e);
+   if (reservations is error) {
+       io:println(msg = < string > reservations.detail().message);
+   } else {
+       io:println(" Successfully describe the instances : ");
+       io:println(insts);
    }
-}
+
 ```
