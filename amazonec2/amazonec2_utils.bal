@@ -24,21 +24,21 @@ import ballerina/system;
 
 function generateSignature(http:Request request, string accessKeyId, string secretAccessKey, string region,
                            string httpVerb, string requestURI, string payload, string canonicalQueryString ) {
-    string canonicalRequest;
-    string stringToSign;
-    string payloadBuilder;
-    string authHeader;
-    string amzDate;
-    string shortDate;
-    string signedHeader;
-    string canonicalHeaders;
-    string signedHeaders;
-    string requestPayload;
-    string signingKey;
-    string encodedrequestURIValue;
-    string signValue;
-    string encodedSignValue;
-
+    string canonicalRequest = "";
+    string stringToSign = "";
+    string payloadBuilder = "";
+    string authHeader = "";
+    string amzDate = "";
+    string shortDate = "";
+    string signedHeader = "";
+    string canonicalHeaders = "";
+    string signedHeaders = "";
+    string requestPayload = "";
+    string signingKey = "";
+    string encodedrequestURIValue = "";
+    string signValue = "";
+    string encodedSignValue = "";
+    string encodedCanonicalQueryString = "";
     time:Time time = time:currentTime().toTimezone("UTC");
     amzDate = time.format(ISO8601_BASIC_DATE_FORMAT);
     shortDate = time.format(SHORT_DATE_FORMAT);
@@ -49,11 +49,23 @@ function generateSignature(http:Request request, string accessKeyId, string secr
 
     canonicalRequest = httpVerb;
     canonicalRequest = canonicalRequest + "\n";
-    encodedrequestURIValue = check http:encode(requestURI, UTF_8);
+    var value = http:encode(requestURI, UTF_8);
+    if (value is string) {
+        encodedrequestURIValue = value;
+    } else {
+        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int"});
+        panic err;
+    }
     encodedrequestURIValue = encodedrequestURIValue.replace("%2F", "/");
     canonicalRequest = canonicalRequest + encodedrequestURIValue;
     canonicalRequest = canonicalRequest + "\n";
-    string encodedCanonicalQueryString = check http:encode(canonicalQueryString, UTF_8);
+    var canonicalValue = http:encode(canonicalQueryString, UTF_8);
+    if (canonicalValue is string) {
+        encodedCanonicalQueryString = canonicalValue;
+    } else {
+        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int"});
+        panic err;
+    }
     encodedCanonicalQueryString = encodedCanonicalQueryString.replace("%3D","=");
     encodedCanonicalQueryString = encodedCanonicalQueryString.replace("%26","&");
     canonicalRequest = canonicalRequest + encodedCanonicalQueryString;
@@ -111,9 +123,16 @@ function generateSignature(http:Request request, string accessKeyId, string secr
     stringToSign = stringToSign + crypto:hash(canonicalRequest, crypto:SHA256).toLower();
 
     signValue = (AWS4 + secretAccessKey);
-    encodedSignValue = check signValue.base64Encode();
-
-    string kDate = crypto:hmac(shortDate, encodedSignValue, keyEncoding = "BASE64", crypto:SHA256).base16ToBase64Encode();
+    //encodedSignValue = check signValue.base64Encode();
+    var encodeValue = signValue.base64Encode();
+    if (encodeValue is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int"});
+        panic err;
+    } else {
+        encodedSignValue = encodeValue;
+    }
+    string kDate = crypto:hmac(shortDate, encodedSignValue, keyEncoding = "BASE64"
+    , crypto:SHA256).base16ToBase64Encode();
     string kRegion = crypto:hmac(region, kDate, keyEncoding = "BASE64", crypto:SHA256).base16ToBase64Encode();
     string kService = crypto:hmac(SERVICE_NAME, kRegion, keyEncoding = "BASE64", crypto:SHA256).base16ToBase64Encode();
     signingKey = crypto:hmac("aws4_request", kService,  keyEncoding = "BASE64", crypto:SHA256).base16ToBase64Encode();
@@ -144,7 +163,6 @@ function generateSignature(http:Request request, string accessKeyId, string secr
 }
 
 function setResponseError(xml xmlResponse) returns error {
-    error err = {};
-    err.message = xmlResponse["Message"].getTextValue();
+    error err = error(AMAZONEC2_ERROR_CODE, { message : xmlResponse["Message"].getTextValue()});
     return err;
 }
