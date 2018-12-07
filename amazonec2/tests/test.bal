@@ -96,7 +96,7 @@ function testDescribeInstances() {
     dependsOn:["testDescribeInstances"]
 }
 function testCreateImage() {
-runtime:sleep(90000);
+    runtime:sleep(90000);
     log:printInfo("amazonEC2Client -> testCreateImage()");
     io:println("#########");
     io:println(testInstanceIds[0]);
@@ -182,7 +182,7 @@ function testCopyImage() {
     dependsOn: ["testRunInstances"]
 }
 function testCreateVolume() {
-runtime:sleep(90000);
+    runtime:sleep(90000);
     log:printInfo("amazonEC2Client -> createVolume()");
     var volume = amazonEC2Client->createVolume(testZoneName, size = 8, volumeType = "standard");
     if (volume is Volume) {
