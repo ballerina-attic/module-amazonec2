@@ -120,7 +120,7 @@ with image details if it is successful or the response is a `error`.
 
 ```ballerina
 if (describeInstances is error) {
-    test:assertFail(msg = < string > describeInstances.detail().message);
+    test:assertFail(msg = <string>describeInstances.detail().message);
 } else {
      io:println("Successfully describe the instance : ");
      io:println(describeInstances);
@@ -194,7 +194,7 @@ The `detachVolume` detaches an EBS volume from an instance.
 if (detachmentInfo is amazonec2:AttachmentInfo) {
     io:println(" Successfully detach the volume : ");
     io:println(detachmentInfo);
-}else {
+} else {
     test:assertFail(msg = <string>detachmentInfo.detail().message);
 }
 ```
@@ -247,7 +247,7 @@ public function main() {
 
     var newInstances = amazonEC2Client->runInstances(imgId, 1, 1);
     if (newInstances is error) {
-        test:assertFail(msg = < string > insts.detail().message);
+        test:assertFail(msg = <string>insts.detail().message);
     } else {
         io:println("Successfully run the instance : ");
         io:println(newInstances);
@@ -260,7 +260,7 @@ public function main() {
 
     var describeInstances = amazonEC2Client->describeInstances(instIds[0]);
     if (describeInstances is error) {
-        test:assertFail(msg = < string > describeInstances.detail().message);
+        test:assertFail(msg = <string>describeInstances.detail().message);
     } else {
          io:println("Successfully describe the instance : ");
          io:println(describeInstances);
@@ -268,7 +268,7 @@ public function main() {
 
     var terminated = amazonEC2Client->terminateInstances(instIds[0]);
     if (terminated is error) {
-        test:assertFail(msg = < string > terminated.detail().message);
+        test:assertFail(msg = <string>terminated.detail().message);
     } else {
         io:println(" Successfully terminate the instance : ");
         io:println(terminated);
@@ -342,7 +342,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
 
     var newInstances = amazonEC2Client->runInstances(imageId, 1, 1, securityGroupId = [testGroupId]);
     if (newInstances is error) {
-        test:assertFail(msg = < string > newInstances.detail().message);
+        test:assertFail(msg = <string>newInstances.detail().message);
     } else {
          io:println("Successfully run the instance : ");
          io:println(newInstances);
@@ -355,7 +355,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
 
     var describeInstances = amazonEC2Client->describeInstances(instIds[0]);
     if (describeInstances is error) {
-        test:assertFail(msg = < string > describeInstances.detail().message);
+        test:assertFail(msg = <string>describeInstances.detail().message);
     } else {
         io:println("Successfully describe the instance : ");
         io:println(describeInstances);
@@ -436,7 +436,7 @@ function callAmazonEC2Methods(string accessKeyId, string secretAccessKey, string
 
     var terminated = amazonEC2Client->terminateInstances(instIds[0]);
     if (terminated is error) {
-        test:assertFail(msg = < string > terminated.detail().message);
+        test:assertFail(msg = <string>terminated.detail().message);
     } else {
         io:println(" Successfully terminate the instance : ");
         io:println(terminated);

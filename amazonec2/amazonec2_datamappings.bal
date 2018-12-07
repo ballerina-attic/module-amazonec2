@@ -26,7 +26,7 @@ function getInstanceList(xml response) returns EC2Instance[] {
             foreach var inst in instances["instancesSet"]["item"] {
                 if (inst is xml) {
                     list[i] = getInstance(inst.elements());
-                    i = i+1;
+                    i = i + 1;
                 }
             }
         }
@@ -43,7 +43,7 @@ function getSpawnedInstancesList(xml response) returns EC2Instance[] {
     foreach var inst in spawnedInstances {
         if (inst is xml) {
             list[i] = getInstance(inst.elements());
-            i = i+1;
+            i = i + 1;
         }
     }
 
@@ -75,7 +75,7 @@ function getTerminatedInstancesList(xml response) returns EC2Instance[] {
                 instance.previousState = getInstanceState(intValue1);
             }
             list[i] = instance;
-            i = i+1;
+            i = i + 1;
         }
     }
     return list;
@@ -124,7 +124,7 @@ function getSpawnedImageList(xml response) returns  Image[] {
     foreach var inst in imageList {
         if (inst is xml) {
             image[i] = getImage(inst.elements());
-            i = i+1;
+            i = i + 1;
         }
     }
     return image;
@@ -252,7 +252,7 @@ function getImageWithLaunchPermissionAttribute(xml content) returns LaunchPermis
             permission.groupName = elements["group"].getTextValue();
             permission.userId = elements["userId"].getTextValue();
             launchPermissionAttribute[i] = permission;
-            i = i+1;
+            i = i + 1;
         }
     }
     return launchPermissionAttribute;
@@ -270,7 +270,7 @@ function getImageWithProductCodesAttribute(xml content) returns ProductCodeAttri
             code.productCode = elements["productCode"].getTextValue();
             code.productType = elements["type"].getTextValue();
             productCodeAttribute[i] = code;
-            i = i+1;
+            i = i + 1;
         }
     }
     return productCodeAttribute;
@@ -289,7 +289,7 @@ function getImageWithBlockDeviceMappingAttribute(xml content) returns BlockDevic
             mapping.noDevice = elements["noDevice"].getTextValue();
             mapping.virtualName = elements["virtualName"].getTextValue();
             blockDeviceMapping[i] = mapping;
-            i = i+1;
+            i = i + 1;
         }
     }
     return blockDeviceMapping;

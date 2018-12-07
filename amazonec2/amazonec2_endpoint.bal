@@ -276,8 +276,8 @@ remote function Client.terminateInstances(string... instanceArray) returns EC2In
             return err;
         }
     } else {
-    error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-    return err;
+        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
+        return err;
     }
 }
 
@@ -291,8 +291,8 @@ remote function Client.createImage(string instanceId, string name) returns Image
     string canonicalQueryString = "Action=CreateImage"+ "&" + "InstanceId" + "="+ instanceId + "&" + "Name" + "=" + name
     + "&" + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
-    if(constructCanonicalString.contains(" ")){
-    constructCanonicalString = constructCanonicalString.replace(" ", "+");
+    if (constructCanonicalString.contains(" ")) {
+        constructCanonicalString = constructCanonicalString.replace(" ", "+");
     }
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
@@ -550,11 +550,11 @@ returns EC2ServiceResponse |error {
     http:Request request = new;
     string canonicalQueryString = "Action=DeleteSecurityGroup" + "&";
 
-    if(group_id != "") {
+    if (group_id != "") {
         canonicalQueryString = canonicalQueryString + "GroupId" + "=" + group_id + "&";
     }
 
-    if(group_name != "") {
+    if (group_name != "") {
         canonicalQueryString = canonicalQueryString + "GroupName" + "=" + group_name + "&";
     }
 
@@ -592,24 +592,24 @@ string? volumeType = ()) returns Volume|error {
 
     int volumeSize = 0;
     string volumeSnapshotId = "";
-    string Vtype = "";
+    string vType = "";
 
-    if(size is int) {
+    if (size is int) {
         volumeSize = size;
     } else {
         volumeSize = 0;
     }
 
-    if(snapshotId is string) {
+    if (snapshotId is string) {
         volumeSnapshotId = snapshotId;
     } else {
         volumeSnapshotId = "";
     }
 
-    if(volumeType is string) {
-        Vtype = volumeType;
+    if (volumeType is string) {
+        vType = volumeType;
     } else {
-        Vtype = "";
+        vType = "";
     }
 
     string httpMethod = "GET";
@@ -619,17 +619,17 @@ string? volumeType = ()) returns Volume|error {
     http:Request request = new;
     string canonicalQueryString = "Action=CreateVolume" + "&" + "AvailabilityZone" + "=" + availabilityZone + "&";
 
-    if(volumeSize != 0) {
+    if (volumeSize != 0) {
         canonicalQueryString = canonicalQueryString + "Size" + "=" + <string> volumeSize + "&";
     }
 
-    if(volumeSnapshotId != "") {
+    if (volumeSnapshotId != "") {
         canonicalQueryString = canonicalQueryString + "SnapshotId" + "=" + volumeSnapshotId + "&";
     }
     canonicalQueryString = canonicalQueryString  + "Version" + "=" + API_VERSION;
 
-    if(Vtype != "") {
-        canonicalQueryString = canonicalQueryString  + "&" + "VolumeType" + "=" + Vtype;
+    if (vType != "") {
+        canonicalQueryString = canonicalQueryString  + "&" + "VolumeType" + "=" + vType;
     }
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
