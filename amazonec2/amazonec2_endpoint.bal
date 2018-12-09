@@ -45,54 +45,54 @@ public type Client client object {
     # + securityGroup - [EC2-Classic, default VPC] One or more security group names
     # + securityGroupId - One or more security group IDs
     # + return - If success, returns EC2Instance of launched instances, else returns error
-    remote function runInstances(string imgId, int maxCount, int minCount, string[]? securityGroup = (),
+    public remote function runInstances(string imgId, int maxCount, int minCount, string[]? securityGroup = (),
                                  string[]? securityGroupId = ()) returns EC2Instance[]|error;
 
     # Describes one or more of your instances.
     # + instanceIds -  Array of instanceIds to describe those
     # + return - If successful, returns EC2Instance[] with zero or more instances, else returns an error
-    remote function describeInstances(string... instanceIds) returns EC2Instance[]|error;
+    public remote function describeInstances(string... instanceIds) returns EC2Instance[]|error;
 
     # Shuts down one or more instances.
     # + instanceArray -  Array of instanceIds to terminate those
     # + return - If success, returns EC2Instance with terminated instances, else returns error
-    remote function terminateInstances(string... instanceArray) returns EC2Instance[]|error;
+    public remote function terminateInstances(string... instanceArray) returns EC2Instance[]|error;
 
     # Create image.
     # + instanceId -  The ID of the instance which is created with the particular image id
     # + name - The name of the image
     # + return - If successful, returns Image with image id, else returns an error
-    remote function createImage(string instanceId, string name) returns Image|error;
+    public remote function createImage(string instanceId, string name) returns Image|error;
 
     # Describe images.
     # + imgIdArr -  The string of AMI array to describe those images
     # + return - If successful, returns Image[] with image details, else returns an error
-    remote function describeImages(string... imgIdArr) returns Image[]|error;
+    public remote function describeImages(string... imgIdArr) returns Image[]|error;
 
     # Deregisters the specified AMI. After you deregister an AMI, it can't be used to launch new instances.
     # + imgId - The ID of the AMI
     # + return - If successful, returns success response, else returns an error
-    remote function deRegisterImage(string imgId) returns EC2ServiceResponse|error;
+    public remote function deRegisterImage(string imgId) returns EC2ServiceResponse|error;
 
     # Describes the specified attribute of the specified AMI. You can specify only one attribute at a time.
     # + amiId - The ID of the AMI
     # + attribute - The specific attribute of the image
     # + return - If successful, returns success response, else returns an error
-    remote function describeImageAttribute(string amiId, string attribute) returns ImageAttribute |error;
+    public remote function describeImageAttribute(string amiId, string attribute) returns ImageAttribute |error;
     
     # Initiates the copy of an AMI from the specified source region to the current region.
     # + name -  The name of the new AMI in the destination region
     # + sourceImageId - The ID of the AMI to copy
     # + sourceRegion - The name of the region that contains the AMI to copy
     # + return - If successful, returns Image object, else returns an error
-    remote function copyImage(string name, string sourceImageId, string sourceRegion) returns Image |error;
+    public remote function copyImage(string name, string sourceImageId, string sourceRegion) returns Image |error;
 
     # Creates a security group.
     # + groupName - The name of the security group
     # + groupDescription - A description for the security group
     # + vpcId - The ID of the VPC, Required for EC2-VPC
     # + return - If successful, returns SecurityGroup object with groupId, else returns an error
-    remote function createSecurityGroup(string groupName, string groupDescription, string? vpcId = ())
+    public remote function createSecurityGroup(string groupName, string groupDescription, string? vpcId = ())
     returns SecurityGroup |error;
 
     # Deletes a security group. Can specify either the security group name or the security group ID,
@@ -100,7 +100,7 @@ public type Client client object {
     # + groupId -  The id of the security group
     # + groupName - The name of the security group
     # + return - If successful, returns success response, else returns an error
-    remote function deleteSecurityGroup(string? groupId = (), string? groupName = ())
+    public remote function deleteSecurityGroup(string? groupId = (), string? groupName = ())
     returns EC2ServiceResponse |error;
 
     # Creates an EBS volume that can be attached to an instance in the same Availability Zone.
@@ -109,7 +109,7 @@ public type Client client object {
     # + snapshotId - The snapshot from which to create the volume
     # + volumeType - The volume type
     # + return - If successful, returns Volume object with created volume details, else returns an error
-    remote function createVolume(string availabilityZone, int? size = (), string? snapshotId = (),
+    public remote function createVolume(string availabilityZone, int? size = (), string? snapshotId = (),
                                  string? volumeType = ()) returns Volume|error;
 
     # Attaches an EBS volume to a running or stopped instance and exposes it to the instance with the specified
@@ -118,13 +118,13 @@ public type Client client object {
     # + instanceId - The ID of the instance
     # + volumeId - The ID of the EBS volume, The volume and instance must be within the same Availability Zone
     # + return - If successful, returns Attachment information, else returns an error
-    remote function attachVolume(string device, string instanceId, string volumeId) returns AttachmentInfo|error;
+    public remote function attachVolume(string device, string instanceId, string volumeId) returns AttachmentInfo|error;
 
     # Detaches an EBS volume from an instance.
     # + force - Forces detachment if the previous detachment attempt did not occur cleanly
     # + volumeId - The ID of the volume
     # + return - If successful, returns detached volume information, else returns an error
-    remote function detachVolume(boolean force = false, string volumeId) returns AttachmentInfo|error;
+    public remote function detachVolume(boolean force = false, string volumeId) returns AttachmentInfo|error;
 };
 
 remote function Client.runInstances(string imgId, int maxCount, int minCount, string[]? securityGroup = (),

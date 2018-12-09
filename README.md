@@ -40,7 +40,7 @@ amazonec2:AmazonEC2Configuration amazonec2Config = {
     clientConfig:{}
 };
    
-   amazonec2:Client amazonEC2Client = new(amazonec2Config);
+amazonec2:Client amazonEC2Client = new(amazonec2Config);
 ```
 
 ##### Sample
