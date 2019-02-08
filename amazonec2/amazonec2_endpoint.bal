@@ -17,6 +17,9 @@
 //
 
 import ballerina/http;
+import ballerina/io;
+import wso2/amazoncommons;
+import ballerina/time;
 
 # AmazonEC2 Client object.
 # + accessKeyId - The access key of Amazon ec2 account
@@ -127,7 +130,7 @@ public type Client client object {
     public remote function detachVolume(boolean force = false, string volumeId) returns AttachmentInfo|error;
 };
 
-remote function Client.runInstances(string imgId, int maxCount, int minCount, string[]? securityGroup = (),
+public remote function Client.runInstances(string imgId, int maxCount, int minCount, string[]? securityGroup = (),
 string[]? securityGroupId = ()) returns EC2Instance[]|error {
 
     string[] groupNames;
@@ -200,7 +203,7 @@ string[]? securityGroupId = ()) returns EC2Instance[]|error {
 }
 
 
-remote function Client.describeInstances(string... instanceIds) returns EC2Instance[]|error {
+public remote function Client.describeInstances(string... instanceIds) returns EC2Instance[]|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -241,7 +244,7 @@ remote function Client.describeInstances(string... instanceIds) returns EC2Insta
     }
 }
 
-remote function Client.terminateInstances(string... instanceArray) returns EC2Instance[]|error {
+public remote function Client.terminateInstances(string... instanceArray) returns EC2Instance[]|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -281,7 +284,7 @@ remote function Client.terminateInstances(string... instanceArray) returns EC2In
     }
 }
 
-remote function Client.createImage(string instanceId, string name) returns Image|error {
+public remote function Client.createImage(string instanceId, string name) returns Image|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -321,7 +324,7 @@ remote function Client.createImage(string instanceId, string name) returns Image
     }
 }
 
-remote function Client.describeImages(string... imgIdArr) returns Image[]|error {
+public remote function Client.describeImages(string... imgIdArr) returns Image[]|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -363,7 +366,7 @@ remote function Client.describeImages(string... imgIdArr) returns Image[]|error 
     }
 }
 
-remote function Client.deRegisterImage(string imgId) returns EC2ServiceResponse |error {
+public remote function Client.deRegisterImage(string imgId) returns EC2ServiceResponse |error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -400,7 +403,7 @@ remote function Client.deRegisterImage(string imgId) returns EC2ServiceResponse 
     }
 }
 
-remote function Client.describeImageAttribute(string amiId, string attribute) returns ImageAttribute|error {
+public remote function Client.describeImageAttribute(string amiId, string attribute) returns ImageAttribute|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -435,7 +438,7 @@ remote function Client.describeImageAttribute(string amiId, string attribute) re
     }
 }
 
-remote function Client.copyImage(string name, string sourceImageId, string sourceRegion)
+public remote function Client.copyImage(string name, string sourceImageId, string sourceRegion)
 returns Image |error {
 
     string httpMethod = "GET";
@@ -472,7 +475,7 @@ returns Image |error {
     }
 }
 
-remote function Client.createSecurityGroup(string groupName, string groupDescription, string? vpcId = ())
+public remote function Client.createSecurityGroup(string groupName, string groupDescription, string? vpcId = ())
 returns SecurityGroup |error {
     string vpc_id;
     if (vpcId is string) {
@@ -503,7 +506,8 @@ returns SecurityGroup |error {
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
     canonicalQueryString);
     var response = self.amazonClient-> get(untaint constructCanonicalString, message = request);
-
+    io:println("--------------------------");
+    io:println(response);
     if (response is http:Response) {
         int statusCode = response.statusCode;
         var amazonResponse = response.getXmlPayload();
@@ -526,7 +530,7 @@ returns SecurityGroup |error {
     }
 }
 
-remote function Client.deleteSecurityGroup(string? groupId = (), string? groupName = ())
+public remote function Client.deleteSecurityGroup(string? groupId = (), string? groupName = ())
 returns EC2ServiceResponse |error {
     string group_id;
     string group_name;
@@ -587,7 +591,7 @@ returns EC2ServiceResponse |error {
     }
 }
 
-remote function Client.createVolume(string availabilityZone, int ? size = (), string ? snapshotId = (),
+public remote function Client.createVolume(string availabilityZone, int ? size = (), string ? snapshotId = (),
 string? volumeType = ()) returns Volume|error {
 
     int volumeSize = 0;
@@ -656,7 +660,7 @@ string? volumeType = ()) returns Volume|error {
     }
 }
 
-remote function Client.attachVolume(string device, string instanceId, string volumeId)
+public remote function Client.attachVolume(string device, string instanceId, string volumeId)
 returns AttachmentInfo|error {
 
     string httpMethod = "GET";
@@ -692,8 +696,7 @@ returns AttachmentInfo|error {
     }
 }
 
-remote function Client.detachVolume(boolean force = false, string volumeId) returns AttachmentInfo|error {
-//match force {boolean value => force = value;}
+public remote function Client.detachVolume(boolean force = false, string volumeId) returns AttachmentInfo|error {
 
     string httpMethod = "GET";
     string requestURI = "/";

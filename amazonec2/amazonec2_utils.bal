@@ -21,6 +21,7 @@ import ballerina/time;
 import ballerina/http;
 import ballerina/crypto;
 import ballerina/system;
+import ballerina/encoding;
 
 function generateSignature(http:Request request, string accessKeyId, string secretAccessKey, string region,
                            string httpVerb, string requestURI, string payload, string canonicalQueryString ) {
@@ -34,19 +35,27 @@ function generateSignature(http:Request request, string accessKeyId, string secr
     string canonicalHeaders = "";
     string signedHeaders = "";
     string requestPayload = "";
-    string signingKey = "";
     string encodedrequestURIValue = "";
     string signValue = "";
     string encodedSignValue = "";
     string encodedCanonicalQueryString = "";
-    time:Time time = time:currentTime().toTimezone("UTC");
-    amzDate = time.format(ISO8601_BASIC_DATE_FORMAT);
-    shortDate = time.format(SHORT_DATE_FORMAT);
+
+    //time:Time time = time:currentTime().toTimezone("UTC");
+    //amzDate = time.format(ISO8601_BASIC_DATE_FORMAT);
+    //shortDate = time.format(SHORT_DATE_FORMAT);
+
+    time:Time time = time:toTimeZone(time:currentTime(), "UTC");
+    amzDate = time:format(time, ISO8601_BASIC_DATE_FORMAT);
+    shortDate = time:format(time, SHORT_DATE_FORMAT);
+
     request.setHeader(CONTENT_TYPE, APPLICATION_URL_ENCODED);
     request.setHeader(X_AMZ_DATE, amzDate);
     string host = SERVICE_NAME + "." + region + "." + "amazonaws.com";
     request.setHeader(HOST,host);
-
+io:println("========================");
+io:println(request.getHeader(CONTENT_TYPE));
+io:println(request.getHeader(X_AMZ_DATE));
+io:println(request.getHeader(HOST));
     canonicalRequest = httpVerb;
     canonicalRequest = canonicalRequest + "\n";
     var value = http:encode(requestURI, UTF_8);
@@ -103,9 +112,9 @@ function generateSignature(http:Request request, string accessKeyId, string secr
     payloadBuilder = payload;
     requestPayload = "";
 
-    requestPayload = crypto:hash(payloadBuilder, crypto:SHA256).toLower();
+    //requestPayload = crypto:hash(payloadBuilder, crypto:SHA256).toLower();
+    requestPayload = encoding:byteArrayToString(crypto:hashSha256(payloadBuilder.toByteArray(UTF_8))).toLower();
     canonicalRequest = canonicalRequest + requestPayload;
-    string canonicalRequestHash = crypto:hash(canonicalRequest, crypto:SHA256).toLower();
 
     //Start creating the string to sign
     stringToSign = stringToSign + AWS4_HMAC_SHA256;
@@ -120,22 +129,23 @@ function generateSignature(http:Request request, string accessKeyId, string secr
     stringToSign = stringToSign + "/";
     stringToSign = stringToSign + TERMINATION_STRING;
     stringToSign = stringToSign + "\n";
-    stringToSign = stringToSign + crypto:hash(canonicalRequest, crypto:SHA256).toLower();
+    //stringToSign = stringToSign + crypto:hash(canonicalRequest, crypto:SHA256).toLower();
+    stringToSign = stringToSign + encoding:encodeHex(crypto:hashSha256(canonicalRequest.toByteArray(UTF_8))).toLower();
 
     signValue = (AWS4 + secretAccessKey);
-    //encodedSignValue = check signValue.base64Encode();
-    var encodeValue = signValue.base64Encode();
-    if (encodeValue is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int"});
-        panic err;
-    } else {
-        encodedSignValue = encodeValue;
-    }
-    string kDate = crypto:hmac(shortDate, encodedSignValue, keyEncoding = "BASE64"
-    , crypto:SHA256).base16ToBase64Encode();
-    string kRegion = crypto:hmac(region, kDate, keyEncoding = "BASE64", crypto:SHA256).base16ToBase64Encode();
-    string kService = crypto:hmac(SERVICE_NAME, kRegion, keyEncoding = "BASE64", crypto:SHA256).base16ToBase64Encode();
-    signingKey = crypto:hmac("aws4_request", kService,  keyEncoding = "BASE64", crypto:SHA256).base16ToBase64Encode();
+    ////encodedSignValue = check signValue.base64Encode();
+    //var encodeValue = signValue.base64Encode();
+    //if (encodeValue is error) {
+    //    error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int"});
+    //    panic err;
+    //} else {
+    //    encodedSignValue = encodeValue;
+    //}
+
+    byte[] kDate = crypto:hmacSha256(shortDate.toByteArray(UTF_8), signValue.toByteArray(UTF_8));
+    byte[] kRegion = crypto:hmacSha256(region.toByteArray(UTF_8), kDate);
+    byte[] kService = crypto:hmacSha256(SERVICE_NAME.toByteArray(UTF_8), kRegion);
+    byte[] signingKey = crypto:hmacSha256("aws4_request".toByteArray(UTF_8), kService);
 
     authHeader = authHeader + (AWS4_HMAC_SHA256);
     authHeader = authHeader + (" ");
@@ -158,7 +168,10 @@ function generateSignature(http:Request request, string accessKeyId, string secr
     authHeader = authHeader + (SIGNATURE);
     authHeader = authHeader + ("=");
 
-    authHeader = authHeader + crypto:hmac(stringToSign, signingKey, keyEncoding = "BASE64", crypto:SHA256).toLower();
+    //authHeader = authHeader + crypto:hmac(stringToSign, signingKey, keyEncoding = "BASE64", crypto:SHA256).toLower();
+    string encodedStr = encoding:encodeHex(crypto:hmacSha256(stringToSign.toByteArray(UTF_8), signingKey));
+    authHeader = authHeader + encodedStr.toLower();
+    io:println(authHeader);
     request.setHeader(AUTHORIZATION, authHeader);
 }
 
