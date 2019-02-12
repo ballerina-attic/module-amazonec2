@@ -17,8 +17,6 @@
 //
 
 import ballerina/http;
-import ballerina/io;
-import wso2/amazoncommons;
 import ballerina/time;
 
 # AmazonEC2 Client object.
@@ -506,8 +504,6 @@ returns SecurityGroup |error {
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
     canonicalQueryString);
     var response = self.amazonClient-> get(untaint constructCanonicalString, message = request);
-    io:println("--------------------------");
-    io:println(response);
     if (response is http:Response) {
         int statusCode = response.statusCode;
         var amazonResponse = response.getXmlPayload();
