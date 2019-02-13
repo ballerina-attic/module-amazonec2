@@ -65,40 +65,40 @@ You can specify the maximum number of instances to launch and the minimum number
 
    `var runInstancesResponse = amazonEC2Client->runInstances(imgId, maxCount, minCount);`
 
-If the instance started successfully, the response from the `runInstances` function is a `EC2Instance` array with one or more launched instance ids.
+If the instance started successfully, the response from the `runInstances` remote function is an `EC2Instance` array representing one or more launched instance(s) IDs.
 If it is unsuccessful, the response is an `error`.
 
 ```ballerina
 if (runInstancesResponse is amazonec2:EC2Instance[]) {
-    io:println("Successfully run the instance: ", runInstancesResponse);
+    io:println("Successfully ran instances: ", runInstancesResponse);
 } else {
     io:println("Error: ", runInstancesResponse.detail().message);
 }
 ```
 
-The `describeInstances` remote function describes one or more of your instances. It returns a `EC2Instance` array with reservation ids if it is successful or an `error` if unsuccessful.
+The `describeInstances` remote function describes one or more of your instances. It returns an `EC2Instance` array with reservation IDs if it is successful or an `error` if unsuccessful.
 
 ```ballerina
-var describeInstances = amazonEC2Client->describeInstances("ami-0ba4ce8cbsffd4e6333");
-if (describeInstances is amazonec2:EC2Instance[]) {
-    io:println("Successfully described the instance: ", describeInstances);
+var describeInstancesResponse = amazonEC2Client->describeInstances("ami-0ba4ce8cbsffd4e6333");
+if (describeInstancesResponse is amazonec2:EC2Instance[]) {
+    io:println("Instance descriptions: ", describeInstancesResponse);
 } else {
-    io:println("Error: ", describeInstances.detail().message);
+    io:println("Error: ", describeInstancesResponse.detail().message);
 }
 ```
 
-The `terminateInstances` remote function shuts down one or more instances. It returns a `EC2Instance` array with terminated instance ids if it is successful or an `error` if unsuccessful.
+The `terminateInstances` remote function shuts down one or more instances. It returns an `EC2Instance` array with terminated instance IDs if it is successful or an `error` if unsuccessful.
 
 ```ballerina
-var terminated = amazonEC2Client->terminateInstances("ami-0ba4ce8cbsffd4e6333");
-if (terminated is amazonec2:EC2Instance[]) {
-    io:println("Successfully terminated the instance: ", terminated);
+var terminationResponse = amazonEC2Client->terminateInstances("ami-0ba4ce8cbsffd4e6333");
+if (terminationResponse is amazonec2:EC2Instance[]) {
+    io:println("Successfully terminated the instance: ", terminationResponse);
 } else {
-    io:println("Error: ", terminated.detail().message);
+    io:println("Error: ", terminationResponse.detail().message);
 }
 ```
 
-The `createImage` remote function will create an image. It returns a `Image` object with created image id if it is successful or an `error` if unsuccessful.
+The `createImage` remote function will create an image. It returns an `Image` object with the created image ID if it is successful or an `error` if unsuccessful.
 
 ```ballerina
 var newImage = amazonEC2Client->createImage("ami-0ba4ce8cbsffd4e6333", "Test Image");
@@ -131,20 +131,20 @@ if (imageAttributeResponse is amazonec2:ImageAttribute) {
 }
 ```
 
-The `deRegisterImage` remote function will de registers the specified AMI. After you deregister an AMI, it can't be used to launch new instances. However, it doesn't affect any instances that you've already launched from the AMI.
+The `deRegisterImage` remote function will deregister the specified AMI. After you deregister an AMI, it cannot be used to launch new instances. However, it doesn't affect any instances that you've already launched from the AMI.
 It returns true as a service response if it is successful or an `error` if unsuccessful.
 
 ```ballerina
 var deRegisterImage = amazonEC2Client->deRegisterImage("ami-0ba4ce8cb48ssfsfs");
 if (deRegisterImage is amazonec2:EC2ServiceResponse) {
-    io:println("Successfully de registered the image: ", deRegisterImage);
+    io:println("Successfully deregistered the image: ", deRegisterImage);
 } else {
     io:println("Error: ", deRegisterImage.detail().message);
 }
 ```
 
-The `copyImage` remote function will Initiates the copy of an AMI from the specified source region to the current region.
- It returns an `Image` object with copied image details if it is successful or an `error` if unsuccessful.
+The `copyImage` remote function initiates the copying of an AMI from the specified source region to the current region.
+ It returns an `Image` object with details of the copied image if it is successful or an `error` if unsuccessful.
 
 ```ballerina
 var copyImage = amazonEC2Client->copyImage("Copy_Image", "ami-0ba423rr4gtcb48ssfsfs", "us-east-2");
@@ -156,7 +156,7 @@ if (copyImage is amazonec2:Image) {
 ```
 
 The `createVolume` remote function creates an EBS volume that can be attached to an instance in the same Availability Zone.
- It returns `Volume` object with created volume details if it is successful or an `error` if unsuccessful.
+ It returns a `Volume` object with created volume details if it is successful or an `error` if unsuccessful.
 
 ```ballerina
 var newVolume = amazonEC2Client->createVolume("us-west-2c", size = 8);
@@ -173,14 +173,14 @@ The `attachVolume` remote function attaches an EBS volume to a running or stoppe
 ```ballerina
 var attachmentInfo = amazonEC2Client->attachVolume("/dev/sdh", "ami-0ba4ce8cssdfd4e6333", volumeId);
 if (attachmentInfo is amazonec2:AttachmentInfo ) {
-    io:println("Successfully attaches volume: ", attachmentInfo);
+    io:println("Successfully attached volume: ", attachmentInfo);
 } else {
     io:println("Error: ", attachmentInfo.detail().message);
 }
 ```
 
 The `detachVolume` remote function detaches an EBS volume from an instance.
- It returns an `AttachmentInfo` object with specified details if it is successful or an `error` if unsuccessful.
+ It returns an `AttachmentInfo` object with volume details if successful or an `error` if unsuccessful.
 
 ```ballerina
 var detachmentInfo = amazonEC2Client->detachVolume(volumeId);
@@ -191,7 +191,7 @@ if (detachmentInfo is amazonec2:AttachmentInfo) {
 }
 ```
 
-The `createSecurityGroup` remote function creates a security group. It returns `SecurityGroup` object with group id if it is successful or an `error` if unsuccessful.
+The `createSecurityGroup` remote function creates a security group. It returns a `SecurityGroup` object with group id if it is successful or an `error` if unsuccessful.
 
 ```ballerina
 var newSecurityGroup = amazonEC2Client->createSecurityGroup("New_ballerina_group", "Test Ballerina Group in AmazonEC2 instance");
@@ -204,12 +204,12 @@ if (newSecurityGroup is amazonec2:SecurityGroup) {
 ```
 
 The `deleteSecurityGroup` remote function deletes a security group by specifying either the security group name or the security group ID.
-But group id is required for a non default VPC. It return true as an service response if it is successful or an `error` if unsuccessful.
+Group id is required for a non default VPC. It returns true as the response if it is successful or an `error` if unsuccessful.
 
 ```ballerina
 var deleteSecurityGroupResponse = amazonEC2Client->deleteSecurityGroup(groupId = testGroupId);
 if (deleteSecurityGroupResponse is amazonec2:EC2ServiceResponse) {
-    io:println("Successfully  delete the security group: ", deleteSecurityGroupResponse);
+    io:println("Successfully deleted the security group: ", deleteSecurityGroupResponse);
 } else {
     io:println("Error: ", deleteSecurityGroupResponse.detail().message);
 }
@@ -236,7 +236,7 @@ public function main() {
 
     var newInstances = amazonEC2Client->runInstances(imageId, 1, 1);
     if (newInstances is amazonec2:EC2Instance[]) {
-        io:println("Successfully run the instance : ", newInstances);
+        io:println("Successfully ran the instance: ", newInstances);
         arr = newInstances;
     } else {
         io:println("Error: ", newInstances.detail().message);
@@ -317,7 +317,7 @@ public function main() {
 
     var newInstances = amazonEC2Client->runInstances(imageId, 1, 1, securityGroupId = [testGroupId]);
     if (newInstances is amazonec2:EC2Instance[]) {
-        io:println("Successfully run the instance: ", newInstances);
+        io:println("Successfully ran the instance: ", newInstances);
         arr = newInstances;
         instIds = arr.map(function (EC2Instance inst) returns (string) {return inst.id;});
         zoneName = newInstances[0].zone;
@@ -347,14 +347,14 @@ public function main() {
 
     var deRegisterImage = amazonEC2Client->deRegisterImage(untaint id);
     if (deRegisterImage is amazonec2:EC2ServiceResponse) {
-        io:println("Successfully de registered the image: ", deRegisterImage);
+        io:println("Successfully deregistered the image: ", deRegisterImage);
     } else {
         io:println("Error: ", deRegisterImage.detail().message);
     }
 
     var describeImageResponse = amazonEC2Client->describeImages(imageId);
     if (describeImageResponse is amazonec2:Image[]) {
-        io:println(" Successfully described the image: ", describeImageResponse);
+        io:println("Image description: ", describeImageResponse);
     } else {
         io:println("Error: ", describeImageResponse.detail().message);
     }
@@ -376,7 +376,7 @@ public function main() {
     string volumeId = "";
     var newVolume = amazonEC2Client->createVolume(zoneName, size = 8);
     if (newVolume is amazonec2:Volume) {
-        io:println("Successfully create a new volume: ", newVolume);
+        io:println("Successfully created a new volume: ", newVolume);
         volumeId = untaint newVolume.volumeId;
     } else {
         io:println("Error: ", newVolume.detail().message);
@@ -386,7 +386,7 @@ public function main() {
 
     var attachmentInfo = amazonEC2Client->attachVolume(deviceName, instIds[0], volumeId);
     if (attachmentInfo is amazonec2:AttachmentInfo) {
-        io:println("Successfully attaches volume: ", attachmentInfo);
+        io:println("Successfully attached volume: ", attachmentInfo);
     } else {
         io:println("Error: ", attachmentInfo.detail().message);
     }
@@ -402,7 +402,7 @@ public function main() {
 
     var terminated = amazonEC2Client->terminateInstances(instIds[0]);
     if (terminated is amazonec2:EC2Instance[]) {
-        io:println("Successfully terminate the instance: ", terminated);
+        io:println("Successfully terminated the instance: ", terminated);
         string instanceId = (terminated[0].id);
         io:println("Instance Id: ", instanceId);
     } else {
@@ -413,7 +413,7 @@ public function main() {
 
     var deleteSecurityGroupResponse = amazonEC2Client->deleteSecurityGroup(groupId = testGroupId);
     if (deleteSecurityGroupResponse is amazonec2:EC2ServiceResponse) {
-        io:println("Successfully  deleted the security group: ", deleteSecurityGroupResponse);
+        io:println("Successfully deleted the security group: ", deleteSecurityGroupResponse);
     } else {
         io:println("Error: ", deleteSecurityGroupResponse.detail().message);
     }

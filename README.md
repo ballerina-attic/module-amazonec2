@@ -60,11 +60,11 @@ amazonec2:Client amazonEC2Client = new(amazonec2Config);
 
 public function main() {
 
-   var describeInstances = amazonEC2Client->describeInstances("i-0b8e13763e642063a");
-   if (describeInstances is amazonec2:EC2Instance[]) {
-       io:println("Successfully described the instance: ", describeInstances);
+   var describeInstancesResponse = amazonEC2Client->describeInstances("i-0b8e13763e642063a");
+   if (describeInstancesResponse is amazonec2:EC2Instance[]) {
+       io:println("Instance descriptions: ", describeInstancesResponse);
    } else {
-       io:println("Error: ", describeInstances.detail().message);
+       io:println("Error: ", describeInstancesResponse.detail().message);
    }
 }
 ```

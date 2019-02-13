@@ -70,7 +70,7 @@ function testRunInstances() {
     if (insts is error) {
         test:assertFail(msg = < string > insts.detail().message);
     } else {
-        io:println("Successfully run the instance: ", insts);
+        io:println("Successfully ran the instance: ", insts);
         arr = insts;
         testInstanceIds = arr.map(function (EC2Instance inst) returns (string) {return inst.id;});
         testZoneName = insts[0].zone;
@@ -135,7 +135,7 @@ function testDescribeImageAttribute() {
     log:printInfo("amazonEC2Client -> describeImageAttribute()");
     var attribute = amazonEC2Client->describeImageAttribute(imgIds[0], "description");
     if (attribute is ImageAttribute) {
-        io:println("Successfully described an image with an attribute: ", attribute);
+        io:println("Successfully described the image with an attribute: ", attribute);
         test:assertNotEquals(attribute, null, msg = "Failed to describe an image with an attribute");
     } else {
         test:assertFail(msg = <string>attribute.detail().message);
@@ -150,9 +150,9 @@ function testDeRegisterImage() {
     log:printInfo("amazonEC2Client -> deRegisterImage()");
     var serviceResponse = amazonEC2Client->deRegisterImage(imgIds[0]);
     if (serviceResponse is EC2ServiceResponse) {
-        io:println("Successfully de registered the image: ", serviceResponse);
+        io:println("Successfully deregistered the image: ", serviceResponse);
         boolean success = serviceResponse.success;
-        test:assertTrue(success, msg = "Failed to de register the image");
+        test:assertTrue(success, msg = "Failed to deregister the image");
     }   else {
         test:assertFail(msg = <string>serviceResponse.detail().message);
     }
@@ -181,7 +181,7 @@ function testCreateVolume() {
     log:printInfo("amazonEC2Client -> createVolume()");
     var volume = amazonEC2Client->createVolume(testZoneName, size = 8, volumeType = "standard");
     if (volume is Volume) {
-        io:println("Successfully created a volume: ", volume);
+        io:println("Successfully created the volume: ", volume);
         testVolumeId = untaint volume.volumeId;
         test:assertNotEquals(volume.volumeId, null, msg = "Failed to create a volume");
     } else {
@@ -243,7 +243,7 @@ function testDeleteSecurityGroup() {
     log:printInfo("amazonEC2Client -> deleteSecurityGroup()");
     var serviceResponse = amazonEC2Client->deleteSecurityGroup(groupId = testGroupId);
     if (serviceResponse is EC2ServiceResponse) {
-        io:println("Successfully  deleted a security group: ", serviceResponse);
+        io:println("Successfully deleted the security group: ", serviceResponse);
         boolean success = serviceResponse.success;
         test:assertTrue(success, msg = "Failed to delete a security group");
     } else {
