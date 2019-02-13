@@ -62,14 +62,14 @@ function getTerminatedInstancesList(xml response) returns EC2Instance[] {
             instance.id = content["instanceId"].getTextValue();
             var intValue = int.convert(content["currentState"]["code"].getTextValue());
             if (intValue is error) {
-                error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int"});
+                error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int" });
                 panic err;
             } else {
                 instance.state = getInstanceState(intValue);
             }
             var intValue1 = int.convert(content["previousState"]["code"].getTextValue());
             if (intValue1 is error) {
-                error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int"});
+                error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int" });
                 panic err;
             } else {
                 instance.previousState = getInstanceState(intValue1);
@@ -89,7 +89,7 @@ function getInstance(xml content) returns EC2Instance {
     instance.zone = content["placement"]["availabilityZone"].getTextValue();
     var intValue = int.convert(content["instanceState"]["code"].getTextValue());
     if (intValue is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int"});
+        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int" });
         panic err;
     } else {
         instance.state = getInstanceState(intValue);
@@ -111,13 +111,13 @@ function getImage(xml content) returns Image {
     return image;
 }
 
-function getImageList(xml response) returns  Image {
+function getImageList(xml response) returns Image {
     Image image = {};
     image.imageId = response["imageId"].getTextValue();
     return image;
 }
 
-function getSpawnedImageList(xml response) returns  Image[] {
+function getSpawnedImageList(xml response) returns Image[] {
     Image[] image = [];
     int i = 0;
     xml imageList = response["imagesSet"]["item"];
@@ -135,13 +135,13 @@ function getVolumeList(xml content) returns Volume {
     volume.availabilityZone = content["availabilityZone"].getTextValue();
     var intValue = int.convert(content["size"].getTextValue());
     if (intValue is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int"});
+        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int" });
         panic err;
     } else {
         volume.size = intValue;
     }
     volume.volumeId = content["volumeId"].getTextValue();
-    volume.volumeType =  getAttachmentVolumeType(content["volumeType"].getTextValue());
+    volume.volumeType = getAttachmentVolumeType(content["volumeType"].getTextValue());
     return volume;
 }
 
@@ -169,7 +169,7 @@ function getInstanceState(int status) returns InstanceState {
     } else if (status == 80) {
         return ISTATE_STOPPED;
     } else {
-        error e = error(AMAZONEC2_ERROR_CODE, {message: "Invalid EC2 instance state: " + status});
+        error e = error(AMAZONEC2_ERROR_CODE, { message: "Invalid EC2 instance state: " + status });
         panic e;
     }
 }
@@ -186,7 +186,7 @@ function getAttachmentVolumeType(string volumeType) returns VolumeType {
     } else if (volumeType == "st1") {
         return TYPE_ST1;
     } else {
-        error e = error(AMAZONEC2_ERROR_CODE, {message: "Invalid EC2 volume type: " + volumeType});
+        error e = error(AMAZONEC2_ERROR_CODE, { message: "Invalid EC2 volume type: " + volumeType });
         panic e;
     }
 }
@@ -203,7 +203,7 @@ function getAttachmentStatus(string status) returns VolumeAttachmentStatus {
     } else if (status == "busy") {
         return BUSY;
     } else {
-        error e = error(AMAZONEC2_ERROR_CODE, {message: "Invalid EC2 volume attachment status: " + status});
+        error e = error(AMAZONEC2_ERROR_CODE, { message: "Invalid EC2 volume attachment status: " + status });
         panic e;
     }
 }
@@ -224,7 +224,7 @@ function getAttributeValue(string attribute, xml content) returns ImageAttribute
     } else if (attribute == "ramdisk") {
         return getImageWithRamDiskAttribute(content);
     } else {
-        error e = error(AMAZONEC2_ERROR_CODE, {message: "Invalid EC2 Image attribute: " + attribute});
+        error e = error(AMAZONEC2_ERROR_CODE, { message: "Invalid EC2 Image attribute: " + attribute });
         panic e;
     }
 }

@@ -150,7 +150,8 @@ public type BlockDeviceMapping record {
 };
 
 # Define sriovNetSupport image attribute, based on this attribute type, an image will be described.
-# + sriovNetSupportValue - Indicates whether enhanced networking with the Intel 82599 Virtual Function interface is enabled
+# + sriovNetSupportValue - Indicates whether enhanced networking with the Intel 82599 Virtual Function
+# interface is enabled
 public type SriovNetSupportAttribute record {
     string sriovNetSupportValue = "";
 };
