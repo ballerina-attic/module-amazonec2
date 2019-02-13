@@ -21,7 +21,7 @@ volume with these operations.
 
 **Image Operations**
 
-The `wso2/amazonec2` module contains operations that work with Amazon EC2 AMIs. You can create, describe, deRegister and copy the
+The `wso2/amazonec2` module contains operations that work with Amazon EC2 AMIs. You can create, describe, deregister and copy the
 AMIs with these operations.
 
 ## Compatibility
@@ -131,15 +131,15 @@ if (imageAttributeResponse is amazonec2:ImageAttribute) {
 }
 ```
 
-The `deRegisterImage` remote function will deregister the specified AMI. After you deregister an AMI, it cannot be used to launch new instances. However, it doesn't affect any instances that you've already launched from the AMI.
+The `deregisterImage` remote function will deregister the specified AMI. After you deregister an AMI, it cannot be used to launch new instances. However, it doesn't affect any instances that you've already launched from the AMI.
 It returns true as a service response if it is successful or an `error` if unsuccessful.
 
 ```ballerina
-var deRegisterImage = amazonEC2Client->deRegisterImage("ami-0ba4ce8cb48ssfsfs");
-if (deRegisterImage is amazonec2:EC2ServiceResponse) {
-    io:println("Successfully deregistered the image: ", deRegisterImage);
+var deregisterImage = amazonEC2Client->deregisterImage("ami-0ba4ce8cb48ssfsfs");
+if (deregisterImage is amazonec2:EC2ServiceResponse) {
+    io:println("Successfully deregistered the image: ", deregisterImage);
 } else {
-    io:println("Error: ", deRegisterImage.detail().message);
+    io:println("Error: ", deregisterImage.detail().message);
 }
 ```
 
@@ -345,11 +345,11 @@ public function main() {
 
     runtime:sleep(60000);// wait until the image creates.
 
-    var deRegisterImage = amazonEC2Client->deRegisterImage(untaint id);
-    if (deRegisterImage is amazonec2:EC2ServiceResponse) {
-        io:println("Successfully deregistered the image: ", deRegisterImage);
+    var deregisterImage = amazonEC2Client->deregisterImage(untaint id);
+    if (deregisterImage is amazonec2:EC2ServiceResponse) {
+        io:println("Successfully deregistered the image: ", deregisterImage);
     } else {
-        io:println("Error: ", deRegisterImage.detail().message);
+        io:println("Error: ", deregisterImage.detail().message);
     }
 
     var describeImageResponse = amazonEC2Client->describeImages(imageId);

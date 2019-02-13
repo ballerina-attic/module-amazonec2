@@ -145,10 +145,10 @@ function testDescribeImageAttribute() {
 @test:Config {
     dependsOn: ["testDescribeImageAttribute"]
 }
-function testDeRegisterImage() {
+function testDeregisterImage() {
     runtime:sleep(90000);
-    log:printInfo("amazonEC2Client -> deRegisterImage()");
-    var serviceResponse = amazonEC2Client->deRegisterImage(imgIds[0]);
+    log:printInfo("amazonEC2Client -> deregisterImage()");
+    var serviceResponse = amazonEC2Client->deregisterImage(imgIds[0]);
     if (serviceResponse is EC2ServiceResponse) {
         io:println("Successfully deregistered the image: ", serviceResponse);
         boolean success = serviceResponse.success;
@@ -159,7 +159,7 @@ function testDeRegisterImage() {
 }
 
 @test:Config {
-    dependsOn: ["testDeRegisterImage"]
+    dependsOn: ["testDeregisterImage"]
 }
 function testCopyImage() {
     runtime:sleep(90000);

@@ -73,7 +73,7 @@ public type Client client object {
     # Deregisters the specified AMI. After you deregister an AMI, it can't be used to launch new instances.
     # + imgId - The ID of the AMI
     # + return - If successful, returns success response, else returns an error
-    public remote function deRegisterImage(string imgId) returns EC2ServiceResponse|error;
+    public remote function deregisterImage(string imgId) returns EC2ServiceResponse|error;
 
     # Describes the specified attribute of the specified AMI. You can specify only one attribute at a time.
     # + amiId - The ID of the AMI
@@ -364,7 +364,7 @@ public remote function Client.describeImages(string... imgIdArr) returns Image[]
     }
 }
 
-public remote function Client.deRegisterImage(string imgId) returns EC2ServiceResponse |error {
+public remote function Client.deregisterImage(string imgId) returns EC2ServiceResponse |error {
 
     string httpMethod = "GET";
     string requestURI = "/";
