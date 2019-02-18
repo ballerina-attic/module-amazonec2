@@ -5,7 +5,7 @@ The Amazon EC2 connector allows you to access the Amazon EC2 REST API through ba
 ## Compatibility
 | Ballerina Version | Amazon EC2 API Version |
 |-------------------|----------------------  |
-| 0.990.0           | 2016-11-15             |
+| 0.990.3           | 2016-11-15             |
 
 ###### Running tests
 

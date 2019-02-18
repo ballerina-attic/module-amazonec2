@@ -8,7 +8,7 @@ The following section provide you the details on connector operations.
 ## Compatibility
 | Ballerina Language Version | Amazon EC2 API version  |
 | -------------------------- | --------------------   |
-| 0.990.0                    | 2016-11-15             |
+| 0.990.3                    | 2016-11-15             |
 
 
 The following sections provide you with information on how to use the Ballerina Amazon EC2 connector.
@@ -38,8 +38,7 @@ In order for you to use the Amazon EC2 Connector, first you need to create a Ama
 amazonec2:AmazonEC2Configuration amazonec2Config = {
     accessKeyId: "",
     secretAccessKey: "",
-    region: "",
-    clientConfig:{}
+    region: ""
 };
    
 amazonec2:Client amazonEC2Client = new(amazonec2Config);
@@ -54,20 +53,18 @@ import wso2/amazonec2;
 amazonec2:AmazonEC2Configuration amazonec2Config = {
     accessKeyId: "",
     secretAccessKey: "",
-    region: "",
-    clientConfig:{}
+    region: ""
 };
 
 amazonec2:Client amazonEC2Client = new(amazonec2Config);
 
 public function main() {
 
-   var describeInstancesResponse = amazonEC2Client->describeInstances();
-   if (reservations is error) {
-       io:println(msg = < string > reservations.detail().message);
+   var describeInstancesResponse = amazonEC2Client->describeInstances("i-0b8e13763e642063a");
+   if (describeInstancesResponse is amazonec2:EC2Instance[]) {
+       io:println("Instance descriptions: ", describeInstancesResponse);
    } else {
-       io:println(" Successfully describe the instances : ");
-       io:println(insts);
+       io:println("Error: ", describeInstancesResponse.detail().message);
    }
-
+}
 ```

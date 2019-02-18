@@ -17,6 +17,7 @@
 //
 
 import ballerina/http;
+import ballerina/time;
 
 # AmazonEC2 Client object.
 # + accessKeyId - The access key of Amazon ec2 account
@@ -29,7 +30,7 @@ public type Client client object {
     public string secretAccessKey;
     public string region;
     public http:Client amazonClient;
-    
+
     public function __init(AmazonEC2Configuration amazonec2Config) {
         string ec2Endpoint = "https://ec2." + amazonec2Config.region + ".amazonaws.com";
         self.amazonClient = new(ec2Endpoint, config = amazonec2Config.clientConfig);
@@ -46,7 +47,7 @@ public type Client client object {
     # + securityGroupId - One or more security group IDs
     # + return - If success, returns EC2Instance of launched instances, else returns error
     public remote function runInstances(string imgId, int maxCount, int minCount, string[]? securityGroup = (),
-                                 string[]? securityGroupId = ()) returns EC2Instance[]|error;
+                                        string[]? securityGroupId = ()) returns EC2Instance[]|error;
 
     # Describes one or more of your instances.
     # + instanceIds -  Array of instanceIds to describe those
@@ -72,20 +73,20 @@ public type Client client object {
     # Deregisters the specified AMI. After you deregister an AMI, it can't be used to launch new instances.
     # + imgId - The ID of the AMI
     # + return - If successful, returns success response, else returns an error
-    public remote function deRegisterImage(string imgId) returns EC2ServiceResponse|error;
+    public remote function deregisterImage(string imgId) returns EC2ServiceResponse|error;
 
     # Describes the specified attribute of the specified AMI. You can specify only one attribute at a time.
     # + amiId - The ID of the AMI
     # + attribute - The specific attribute of the image
     # + return - If successful, returns success response, else returns an error
-    public remote function describeImageAttribute(string amiId, string attribute) returns ImageAttribute |error;
-    
+    public remote function describeImageAttribute(string amiId, string attribute) returns ImageAttribute|error;
+
     # Initiates the copy of an AMI from the specified source region to the current region.
     # + name -  The name of the new AMI in the destination region
     # + sourceImageId - The ID of the AMI to copy
     # + sourceRegion - The name of the region that contains the AMI to copy
     # + return - If successful, returns Image object, else returns an error
-    public remote function copyImage(string name, string sourceImageId, string sourceRegion) returns Image |error;
+    public remote function copyImage(string name, string sourceImageId, string sourceRegion) returns Image|error;
 
     # Creates a security group.
     # + groupName - The name of the security group
@@ -93,7 +94,7 @@ public type Client client object {
     # + vpcId - The ID of the VPC, Required for EC2-VPC
     # + return - If successful, returns SecurityGroup object with groupId, else returns an error
     public remote function createSecurityGroup(string groupName, string groupDescription, string? vpcId = ())
-    returns SecurityGroup |error;
+                               returns SecurityGroup|error;
 
     # Deletes a security group. Can specify either the security group name or the security group ID,
     # But group id is required for a non default VPC.
@@ -101,7 +102,7 @@ public type Client client object {
     # + groupName - The name of the security group
     # + return - If successful, returns success response, else returns an error
     public remote function deleteSecurityGroup(string? groupId = (), string? groupName = ())
-    returns EC2ServiceResponse |error;
+                               returns EC2ServiceResponse|error;
 
     # Creates an EBS volume that can be attached to an instance in the same Availability Zone.
     # + availabilityZone - The Availability Zone in which to create the volume
@@ -110,7 +111,7 @@ public type Client client object {
     # + volumeType - The volume type
     # + return - If successful, returns Volume object with created volume details, else returns an error
     public remote function createVolume(string availabilityZone, int? size = (), string? snapshotId = (),
-                                 string? volumeType = ()) returns Volume|error;
+                                        string? volumeType = ()) returns Volume|error;
 
     # Attaches an EBS volume to a running or stopped instance and exposes it to the instance with the specified
     # device name.
@@ -127,8 +128,8 @@ public type Client client object {
     public remote function detachVolume(boolean force = false, string volumeId) returns AttachmentInfo|error;
 };
 
-remote function Client.runInstances(string imgId, int maxCount, int minCount, string[]? securityGroup = (),
-string[]? securityGroupId = ()) returns EC2Instance[]|error {
+public remote function Client.runInstances(string imgId, int maxCount, int minCount, string[]? securityGroup = (),
+                                           string[]? securityGroupId = ()) returns EC2Instance[]|error {
 
     string[] groupNames;
     string[] groupIds;
@@ -151,7 +152,7 @@ string[]? securityGroupId = ()) returns EC2Instance[]|error {
     http:Request request = new;
     string canonicalQueryString = "Action=RunInstances&";
 
-    if(imgId != ""){
+    if (imgId != "") {
         canonicalQueryString = canonicalQueryString + "ImageId" + "=" + imgId + "&";
     }
 
@@ -165,7 +166,7 @@ string[]? securityGroupId = ()) returns EC2Instance[]|error {
         }
     }
 
-    if(groupIds.length() > 0) {
+    if (groupIds.length() > 0) {
         int j = 1;
         foreach var id in groupIds {
             canonicalQueryString = canonicalQueryString + "SecurityGroupId." + j + "=" + id + "&";
@@ -173,11 +174,11 @@ string[]? securityGroupId = ()) returns EC2Instance[]|error {
         }
     }
 
-    canonicalQueryString = canonicalQueryString+ "Version" + "=" + API_VERSION;
+    canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(constructCanonicalString, message = request);
     if (response is http:Response) {
         int statusCode = response.statusCode;
@@ -200,7 +201,7 @@ string[]? securityGroupId = ()) returns EC2Instance[]|error {
 }
 
 
-remote function Client.describeInstances(string... instanceIds) returns EC2Instance[]|error {
+public remote function Client.describeInstances(string... instanceIds) returns EC2Instance[]|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -219,7 +220,7 @@ remote function Client.describeInstances(string... instanceIds) returns EC2Insta
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(constructCanonicalString, message = request);
     if (response is http:Response) {
         int statusCode = response.statusCode;
@@ -241,7 +242,7 @@ remote function Client.describeInstances(string... instanceIds) returns EC2Insta
     }
 }
 
-remote function Client.terminateInstances(string... instanceArray) returns EC2Instance[]|error {
+public remote function Client.terminateInstances(string... instanceArray) returns EC2Instance[]|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -258,7 +259,7 @@ remote function Client.terminateInstances(string... instanceArray) returns EC2In
     canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
 
     if (response is http:Response) {
@@ -281,22 +282,22 @@ remote function Client.terminateInstances(string... instanceArray) returns EC2In
     }
 }
 
-remote function Client.createImage(string instanceId, string name) returns Image|error {
+public remote function Client.createImage(string instanceId, string name) returns Image|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
     string host = SERVICE_NAME + "." + self.region + "." + "amazonaws.com";
     string amazonEndpoint = "https://" + host;
     http:Request request = new;
-    string canonicalQueryString = "Action=CreateImage"+ "&" + "InstanceId" + "="+ instanceId + "&" + "Name" + "=" + name
-    + "&" + "Version" + "=" + API_VERSION;
+    string canonicalQueryString = "Action=CreateImage" + "&" + "InstanceId" + "=" + instanceId + "&" + "Name" + "=" +
+        name + "&" + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     if (constructCanonicalString.contains(" ")) {
         constructCanonicalString = constructCanonicalString.replace(" ", "+");
     }
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(constructCanonicalString, message = request);
 
     if (response is http:Response) {
@@ -321,7 +322,7 @@ remote function Client.createImage(string instanceId, string name) returns Image
     }
 }
 
-remote function Client.describeImages(string... imgIdArr) returns Image[]|error {
+public remote function Client.describeImages(string... imgIdArr) returns Image[]|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -329,7 +330,7 @@ remote function Client.describeImages(string... imgIdArr) returns Image[]|error 
     string amazonEndpoint = "https://" + host;
     http:Request request = new;
     string canonicalQueryString = "Action=DescribeImages" + "&";
-    if(imgIdArr.length() > 0){
+    if (imgIdArr.length() > 0) {
         int i = 1;
         foreach var instances in imgIdArr {
             canonicalQueryString = canonicalQueryString + "ImageId." + i + "=" + instances + "&";
@@ -340,7 +341,7 @@ remote function Client.describeImages(string... imgIdArr) returns Image[]|error 
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
 
     if (response is http:Response) {
@@ -363,7 +364,7 @@ remote function Client.describeImages(string... imgIdArr) returns Image[]|error 
     }
 }
 
-remote function Client.deRegisterImage(string imgId) returns EC2ServiceResponse |error {
+public remote function Client.deregisterImage(string imgId) returns EC2ServiceResponse|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -371,11 +372,11 @@ remote function Client.deRegisterImage(string imgId) returns EC2ServiceResponse 
     string amazonEndpoint = "https://" + host;
     http:Request request = new;
     string canonicalQueryString = "Action=DeregisterImage" + "&" + "ImageId" + "=" + imgId + "&" +
-    "Version" + "=" + API_VERSION;
+        "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(constructCanonicalString, message = request);
 
     if (response is http:Response) {
@@ -400,7 +401,7 @@ remote function Client.deRegisterImage(string imgId) returns EC2ServiceResponse 
     }
 }
 
-remote function Client.describeImageAttribute(string amiId, string attribute) returns ImageAttribute|error {
+public remote function Client.describeImageAttribute(string amiId, string attribute) returns ImageAttribute|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -408,11 +409,11 @@ remote function Client.describeImageAttribute(string amiId, string attribute) re
     string amazonEndpoint = "https://" + host;
     http:Request request = new;
     string canonicalQueryString = "Action=DescribeImageAttribute" + "&" + "Attribute" + "=" + attribute + "&" +
-    "ImageId" + "=" + amiId + "&" + "Version" + "=" + API_VERSION;
+        "ImageId" + "=" + amiId + "&" + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(constructCanonicalString, message = request);
 
     if (response is http:Response) {
@@ -435,8 +436,8 @@ remote function Client.describeImageAttribute(string amiId, string attribute) re
     }
 }
 
-remote function Client.copyImage(string name, string sourceImageId, string sourceRegion)
-returns Image |error {
+public remote function Client.copyImage(string name, string sourceImageId, string sourceRegion)
+                                  returns Image|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -444,11 +445,11 @@ returns Image |error {
     string amazonEndpoint = "https://" + host;
     http:Request request = new;
     string canonicalQueryString = "Action=CopyImage" + "&" + "Name" + "=" + name + "&" + "SourceImageId" + "=" +
-    sourceImageId + "&" + "SourceRegion" + "=" + sourceRegion + "&" + "Version" + "=" + API_VERSION;
+        sourceImageId + "&" + "SourceRegion" + "=" + sourceRegion + "&" + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(constructCanonicalString, message = request);
     if (response is http:Response) {
         int statusCode = response.statusCode;
@@ -472,8 +473,8 @@ returns Image |error {
     }
 }
 
-remote function Client.createSecurityGroup(string groupName, string groupDescription, string? vpcId = ())
-returns SecurityGroup |error {
+public remote function Client.createSecurityGroup(string groupName, string groupDescription, string? vpcId = ())
+                                  returns SecurityGroup|error {
     string vpc_id;
     if (vpcId is string) {
         vpc_id = vpcId;
@@ -487,23 +488,22 @@ returns SecurityGroup |error {
     string amazonEndpoint = "https://" + host;
     http:Request request = new;
     string canonicalQueryString = "Action=CreateSecurityGroup" + "&" + "GroupDescription" + "=" + groupDescription
-    + "&" + "GroupName" + "=" + groupName + "&" + "Version" + "=" + API_VERSION;
+        + "&" + "GroupName" + "=" + groupName + "&" + "Version" + "=" + API_VERSION;
 
-    if(vpc_id != "") {
+    if (vpc_id != "") {
         canonicalQueryString = canonicalQueryString + "&VpcId" + "=" + vpc_id;
     }
 
     string constructCanonicalString = "/?" + canonicalQueryString;
 
-    if(constructCanonicalString.contains(" ")){
+    if (constructCanonicalString.contains(" ")) {
         constructCanonicalString = constructCanonicalString.replace(" ", "+");
     }
 
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
-    var response = self.amazonClient-> get(untaint constructCanonicalString, message = request);
-
+        canonicalQueryString);
+    var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
     if (response is http:Response) {
         int statusCode = response.statusCode;
         var amazonResponse = response.getXmlPayload();
@@ -526,8 +526,8 @@ returns SecurityGroup |error {
     }
 }
 
-remote function Client.deleteSecurityGroup(string? groupId = (), string? groupName = ())
-returns EC2ServiceResponse |error {
+public remote function Client.deleteSecurityGroup(string? groupId = (), string? groupName = ())
+                                  returns EC2ServiceResponse|error {
     string group_id;
     string group_name;
 
@@ -558,11 +558,11 @@ returns EC2ServiceResponse |error {
         canonicalQueryString = canonicalQueryString + "GroupName" + "=" + group_name + "&";
     }
 
-    canonicalQueryString = canonicalQueryString  + "Version" + "=" + API_VERSION;
+    canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
 
     if (response is http:Response) {
@@ -587,8 +587,8 @@ returns EC2ServiceResponse |error {
     }
 }
 
-remote function Client.createVolume(string availabilityZone, int ? size = (), string ? snapshotId = (),
-string? volumeType = ()) returns Volume|error {
+public remote function Client.createVolume(string availabilityZone, int? size = (), string? snapshotId = (),
+                                           string? volumeType = ()) returns Volume|error {
 
     int volumeSize = 0;
     string volumeSnapshotId = "";
@@ -620,21 +620,21 @@ string? volumeType = ()) returns Volume|error {
     string canonicalQueryString = "Action=CreateVolume" + "&" + "AvailabilityZone" + "=" + availabilityZone + "&";
 
     if (volumeSize != 0) {
-        canonicalQueryString = canonicalQueryString + "Size" + "=" + <string> volumeSize + "&";
+        canonicalQueryString = canonicalQueryString + "Size" + "=" + <string>volumeSize + "&";
     }
 
     if (volumeSnapshotId != "") {
         canonicalQueryString = canonicalQueryString + "SnapshotId" + "=" + volumeSnapshotId + "&";
     }
-    canonicalQueryString = canonicalQueryString  + "Version" + "=" + API_VERSION;
+    canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
 
     if (vType != "") {
-        canonicalQueryString = canonicalQueryString  + "&" + "VolumeType" + "=" + vType;
+        canonicalQueryString = canonicalQueryString + "&" + "VolumeType" + "=" + vType;
     }
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(constructCanonicalString, message = request);
     if (response is http:Response) {
         int statusCode = response.statusCode;
@@ -656,8 +656,8 @@ string? volumeType = ()) returns Volume|error {
     }
 }
 
-remote function Client.attachVolume(string device, string instanceId, string volumeId)
-returns AttachmentInfo|error {
+public remote function Client.attachVolume(string device, string instanceId, string volumeId)
+                                  returns AttachmentInfo|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -665,11 +665,11 @@ returns AttachmentInfo|error {
     string amazonEndpoint = "https://" + host;
     http:Request request = new;
     string canonicalQueryString = "Action=AttachVolume" + "&" + "Device" + "=" + device + "&" + "InstanceId" + "="
-    + instanceId + "&" + "Version" + "=" + API_VERSION + "&" + "VolumeId" + "=" + volumeId;
+        + instanceId + "&" + "Version" + "=" + API_VERSION + "&" + "VolumeId" + "=" + volumeId;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(constructCanonicalString, message = request);
 
     if (response is http:Response) {
@@ -692,8 +692,7 @@ returns AttachmentInfo|error {
     }
 }
 
-remote function Client.detachVolume(boolean force = false, string volumeId) returns AttachmentInfo|error {
-//match force {boolean value => force = value;}
+public remote function Client.detachVolume(boolean force = false, string volumeId) returns AttachmentInfo|error {
 
     string httpMethod = "GET";
     string requestURI = "/";
@@ -701,11 +700,11 @@ remote function Client.detachVolume(boolean force = false, string volumeId) retu
     string amazonEndpoint = "https://" + host;
     http:Request request = new;
     string canonicalQueryString = "Action=DetachVolume" + "&" + "Force" + "=" + force + "&" +
-    "Version" + "=" + API_VERSION + "&" + "VolumeId" + "=" + volumeId;
+        "Version" + "=" + API_VERSION + "&" + "VolumeId" + "=" + volumeId;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
     generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-    canonicalQueryString);
+        canonicalQueryString);
     var response = self.amazonClient->get(constructCanonicalString, message = request);
 
     if (response is http:Response) {
