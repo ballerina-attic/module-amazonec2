@@ -92,7 +92,7 @@ The `terminateInstances` remote function shuts down one or more instances. It re
 ```ballerina
 var terminationResponse = amazonEC2Client->terminateInstances("ami-0ba4ce8cbsffd4e6333");
 if (terminationResponse is amazonec2:EC2Instance[]) {
-    io:println("Successfully terminated the instance: ", terminationResponse);
+    io:println("Successfully terminated instance(s): ", terminationResponse);
 } else {
     io:println("Error: ", terminationResponse.detail().message);
 }
@@ -185,7 +185,7 @@ The `detachVolume` remote function detaches an EBS volume from an instance.
 ```ballerina
 var detachmentInfo = amazonEC2Client->detachVolume(volumeId);
 if (detachmentInfo is amazonec2:AttachmentInfo) {
-    io:println("Successfully detach the volume: ", detachmentInfo);
+    io:println("Successfully detached the volume: ", detachmentInfo);
 } else {
     io:println("Error: ", detachmentInfo.detail().message);
 }
