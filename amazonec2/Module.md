@@ -27,7 +27,7 @@ AMIs with these operations.
 ## Compatibility
 |                    |    Version     |
 |:------------------:|:--------------:|
-| Ballerina Language |   0.990.3      |
+| Ballerina Language |   0.991.0      |
 | Amazon EC2 API     |   2016-11-15   |
 
 ## Sample

@@ -8,7 +8,7 @@ The following section provide you the details on connector operations.
 ## Compatibility
 | Ballerina Language Version | Amazon EC2 API version  |
 | -------------------------- | --------------------   |
-| 0.990.3                    | 2016-11-15             |
+| 0.991.0                    | 2016-11-15             |
 
 
 The following sections provide you with information on how to use the Ballerina Amazon EC2 connector.
