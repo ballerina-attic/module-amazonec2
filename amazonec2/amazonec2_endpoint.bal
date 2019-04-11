@@ -190,7 +190,7 @@ public remote function Client.runInstances(string imgId, int maxCount, int minCo
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     return getSpawnedInstancesList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -239,7 +239,7 @@ public remote function Client.describeInstances(string... instanceIds) returns E
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     return getInstanceList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -286,7 +286,7 @@ public remote function Client.terminateInstances(string... instanceArray) return
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     return getTerminatedInstancesList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -331,7 +331,7 @@ public remote function Client.createImage(string instanceId, string name) return
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     Image image = {};
                     image.imageId = amazonResponse["imageId"].getTextValue();
                     return image;
@@ -382,7 +382,7 @@ public remote function Client.describeImages(string... imgIdArr) returns Image[]
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     return getSpawnedImageList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -424,7 +424,7 @@ public remote function Client.deregisterImage(string imgId) returns EC2ServiceRe
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     EC2ServiceResponse serviceResponse = {};
                     serviceResponse.success = boolean.convert(amazonResponse["return"].getTextValue());
                     return serviceResponse;
@@ -468,7 +468,7 @@ public remote function Client.describeImageAttribute(string amiId, string attrib
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     return getAttributeValue(attribute, amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -510,7 +510,7 @@ public remote function Client.copyImage(string name, string sourceImageId, strin
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     Image image = {};
                     image.imageId = amazonResponse["imageId"].getTextValue();
                     return image;
@@ -570,7 +570,7 @@ public remote function Client.createSecurityGroup(string groupName, string group
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     SecurityGroup securityGroup = {};
                     securityGroup.groupId = amazonResponse["groupId"].getTextValue();
                     return securityGroup;
@@ -638,7 +638,7 @@ public remote function Client.deleteSecurityGroup(string? groupId = (), string? 
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     EC2ServiceResponse serviceResponse = {};
                     serviceResponse.success = boolean.convert(amazonResponse["return"].getTextValue());
                     return serviceResponse;
@@ -716,7 +716,7 @@ public remote function Client.createVolume(string availabilityZone, int? size = 
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     return getVolumeList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -759,7 +759,7 @@ public remote function Client.attachVolume(string device, string instanceId, str
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     return getVolumeAttachmentList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -801,7 +801,7 @@ public remote function Client.detachVolume(boolean force = false, string volumeI
             int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == 200) {
+                if (statusCode == http:OK_200) {
                     return getVolumeAttachmentList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
