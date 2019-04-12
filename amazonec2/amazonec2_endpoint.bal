@@ -181,16 +181,15 @@ public remote function Client.runInstances(string imgId, int maxCount, int minCo
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(constructCanonicalString, message = request);
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
+                if (response.statusCode == http:OK_200) {
                     return getSpawnedInstancesList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -230,16 +229,15 @@ public remote function Client.describeInstances(string... instanceIds) returns E
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(constructCanonicalString, message = request);
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
+                if (response.statusCode == http:OK_200) {
                     return getInstanceList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -276,17 +274,16 @@ public remote function Client.terminateInstances(string... instanceArray) return
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
 
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
+                if (response.statusCode == http:OK_200) {
                     return getTerminatedInstancesList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -321,19 +318,17 @@ public remote function Client.createImage(string instanceId, string name) return
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(constructCanonicalString, message = request);
 
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
-                    Image image = {};
-                    image.imageId = amazonResponse["imageId"].getTextValue();
+                if (response.statusCode == http:OK_200) {
+                    Image image = { imageId: amazonResponse["imageId"].getTextValue() };
                     return image;
                 } else {
                     return setResponseError(amazonResponse);
@@ -372,17 +367,16 @@ public remote function Client.describeImages(string... imgIdArr) returns Image[]
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
 
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
+                if (response.statusCode == http:OK_200) {
                     return getSpawnedImageList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -414,19 +408,18 @@ public remote function Client.deregisterImage(string imgId) returns EC2ServiceRe
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(constructCanonicalString, message = request);
 
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
-                    EC2ServiceResponse serviceResponse = {};
-                    serviceResponse.success = boolean.convert(amazonResponse["return"].getTextValue());
+                if (response.statusCode == http:OK_200) {
+                    EC2ServiceResponse serviceResponse =
+                    { success: boolean.convert(amazonResponse["return"].getTextValue())};
                     return serviceResponse;
                 } else {
                     return setResponseError(amazonResponse);
@@ -458,17 +451,16 @@ public remote function Client.describeImageAttribute(string amiId, string attrib
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(constructCanonicalString, message = request);
 
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
+                if (response.statusCode == http:OK_200) {
                     return getAttributeValue(attribute, amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -501,18 +493,16 @@ public remote function Client.copyImage(string name, string sourceImageId, strin
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(constructCanonicalString, message = request);
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
-                    Image image = {};
-                    image.imageId = amazonResponse["imageId"].getTextValue();
+                if (response.statusCode == http:OK_200) {
+                    Image image = { imageId: amazonResponse["imageId"].getTextValue() };
                     return image;
                 } else {
                     return setResponseError(amazonResponse);
@@ -561,18 +551,16 @@ public remote function Client.createSecurityGroup(string groupName, string group
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
-                    SecurityGroup securityGroup = {};
-                    securityGroup.groupId = amazonResponse["groupId"].getTextValue();
+                if (response.statusCode == http:OK_200) {
+                    SecurityGroup securityGroup = { groupId: amazonResponse["groupId"].getTextValue() };
                     return securityGroup;
                 } else {
                     return setResponseError(amazonResponse);
@@ -628,19 +616,18 @@ public remote function Client.deleteSecurityGroup(string? groupId = (), string? 
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
 
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
-                    EC2ServiceResponse serviceResponse = {};
-                    serviceResponse.success = boolean.convert(amazonResponse["return"].getTextValue());
+                if (response.statusCode == http:OK_200) {
+                    EC2ServiceResponse serviceResponse =
+                    { success: boolean.convert(amazonResponse["return"].getTextValue()) };
                     return serviceResponse;
                 } else {
                     return setResponseError(amazonResponse);
@@ -707,16 +694,15 @@ public remote function Client.createVolume(string availabilityZone, int? size = 
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(constructCanonicalString, message = request);
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
+                if (response.statusCode == http:OK_200) {
                     return getVolumeList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -749,17 +735,16 @@ public remote function Client.attachVolume(string device, string instanceId, str
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(constructCanonicalString, message = request);
 
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
+                if (response.statusCode == http:OK_200) {
                     return getVolumeAttachmentList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
@@ -791,17 +776,16 @@ public remote function Client.detachVolume(boolean force = false, string volumeI
         canonicalQueryString);
 
     if (signature is error) {
-        error err = error(AMAZONEC2_ERROR_CODE, { ^"error": signature.detail(),
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
             message: "Error occurred while generating the amazon signature header" });
         return err;
     } else {
         var response = self.amazonClient->get(constructCanonicalString, message = request);
 
         if (response is http:Response) {
-            int statusCode = response.statusCode;
             var amazonResponse = response.getXmlPayload();
             if (amazonResponse is xml) {
-                if (statusCode == http:OK_200) {
+                if (response.statusCode == http:OK_200) {
                     return getVolumeAttachmentList(amazonResponse);
                 } else {
                     return setResponseError(amazonResponse);
