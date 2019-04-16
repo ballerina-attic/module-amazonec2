@@ -177,26 +177,32 @@ public remote function Client.runInstances(string imgId, int maxCount, int minCo
     canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(constructCanonicalString, message = request);
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                return getSpawnedInstancesList(amazonResponse);
+
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(constructCanonicalString, message = request);
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    return getSpawnedInstancesList(amazonResponse);
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
 
@@ -219,26 +225,32 @@ public remote function Client.describeInstances(string... instanceIds) returns E
     canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(constructCanonicalString, message = request);
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                return getInstanceList(amazonResponse);
+
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(constructCanonicalString, message = request);
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    return getInstanceList(amazonResponse);
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the AmazonEc2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the AmazonEc2 API" });
-        return err;
     }
 }
 
@@ -258,27 +270,33 @@ public remote function Client.terminateInstances(string... instanceArray) return
 
     canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
 
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                return getTerminatedInstancesList(amazonResponse);
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
+
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    return getTerminatedInstancesList(amazonResponse);
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
 
@@ -296,29 +314,34 @@ public remote function Client.createImage(string instanceId, string name) return
         constructCanonicalString = constructCanonicalString.replace(" ", "+");
     }
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(constructCanonicalString, message = request);
 
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                Image image = {};
-                image.imageId = amazonResponse["imageId"].getTextValue();
-                return image;
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(constructCanonicalString, message = request);
+
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    Image image = { imageId: amazonResponse["imageId"].getTextValue() };
+                    return image;
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
 
@@ -340,27 +363,33 @@ public remote function Client.describeImages(string... imgIdArr) returns Image[]
     canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
 
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                return getSpawnedImageList(amazonResponse);
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
+
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    return getSpawnedImageList(amazonResponse);
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
 
@@ -375,29 +404,35 @@ public remote function Client.deregisterImage(string imgId) returns EC2ServiceRe
         "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(constructCanonicalString, message = request);
 
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                EC2ServiceResponse serviceResponse = {};
-                serviceResponse.success = boolean.convert(amazonResponse["return"].getTextValue());
-                return serviceResponse;
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(constructCanonicalString, message = request);
+
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    EC2ServiceResponse serviceResponse =
+                    { success: boolean.convert(amazonResponse["return"].getTextValue())};
+                    return serviceResponse;
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
 
@@ -412,27 +447,33 @@ public remote function Client.describeImageAttribute(string amiId, string attrib
         "ImageId" + "=" + amiId + "&" + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(constructCanonicalString, message = request);
 
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                return getAttributeValue(attribute, amazonResponse);
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(constructCanonicalString, message = request);
+
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    return getAttributeValue(attribute, amazonResponse);
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
 
@@ -448,28 +489,33 @@ public remote function Client.copyImage(string name, string sourceImageId, strin
         sourceImageId + "&" + "SourceRegion" + "=" + sourceRegion + "&" + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(constructCanonicalString, message = request);
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                Image image = {};
-                image.imageId = amazonResponse["imageId"].getTextValue();
-                return image;
+
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(constructCanonicalString, message = request);
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    Image image = { imageId: amazonResponse["imageId"].getTextValue() };
+                    return image;
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
 
@@ -501,28 +547,33 @@ public remote function Client.createSecurityGroup(string groupName, string group
     }
 
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                SecurityGroup securityGroup = {};
-                securityGroup.groupId = amazonResponse["groupId"].getTextValue();
-                return securityGroup;
+
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    SecurityGroup securityGroup = { groupId: amazonResponse["groupId"].getTextValue() };
+                    return securityGroup;
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
 
@@ -561,29 +612,35 @@ public remote function Client.deleteSecurityGroup(string? groupId = (), string? 
     canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
 
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                EC2ServiceResponse serviceResponse = {};
-                serviceResponse.success = boolean.convert(amazonResponse["return"].getTextValue());
-                return serviceResponse;
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(untaint constructCanonicalString, message = request);
+
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    EC2ServiceResponse serviceResponse =
+                    { success: boolean.convert(amazonResponse["return"].getTextValue()) };
+                    return serviceResponse;
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
 
@@ -620,7 +677,7 @@ public remote function Client.createVolume(string availabilityZone, int? size = 
     string canonicalQueryString = "Action=CreateVolume" + "&" + "AvailabilityZone" + "=" + availabilityZone + "&";
 
     if (volumeSize != 0) {
-        canonicalQueryString = canonicalQueryString + "Size" + "=" + <string>volumeSize + "&";
+        canonicalQueryString = canonicalQueryString + "Size" + "=" + string.convert(volumeSize) + "&";
     }
 
     if (volumeSnapshotId != "") {
@@ -633,26 +690,32 @@ public remote function Client.createVolume(string availabilityZone, int? size = 
     }
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(constructCanonicalString, message = request);
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                return getVolumeList(amazonResponse);
+
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(constructCanonicalString, message = request);
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    return getVolumeList(amazonResponse);
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
 
@@ -668,27 +731,33 @@ public remote function Client.attachVolume(string device, string instanceId, str
         + instanceId + "&" + "Version" + "=" + API_VERSION + "&" + "VolumeId" + "=" + volumeId;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(constructCanonicalString, message = request);
 
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                return getVolumeAttachmentList(amazonResponse);
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(constructCanonicalString, message = request);
+
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    return getVolumeAttachmentList(amazonResponse);
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
 
@@ -703,26 +772,32 @@ public remote function Client.detachVolume(boolean force = false, string volumeI
         "Version" + "=" + API_VERSION + "&" + "VolumeId" + "=" + volumeId;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
         canonicalQueryString);
-    var response = self.amazonClient->get(constructCanonicalString, message = request);
 
-    if (response is http:Response) {
-        int statusCode = response.statusCode;
-        var amazonResponse = response.getXmlPayload();
-        if (amazonResponse is xml) {
-            if (statusCode == 200) {
-                return getVolumeAttachmentList(amazonResponse);
+    if (signature is error) {
+        error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
+            message: "Error occurred while generating the amazon signature header" });
+        return err;
+    } else {
+        var response = self.amazonClient->get(constructCanonicalString, message = request);
+
+        if (response is http:Response) {
+            var amazonResponse = response.getXmlPayload();
+            if (amazonResponse is xml) {
+                if (response.statusCode == http:OK_200) {
+                    return getVolumeAttachmentList(amazonResponse);
+                } else {
+                    return setResponseError(amazonResponse);
+                }
             } else {
-                return setResponseError(amazonResponse);
+                error err = error(AMAZONEC2_ERROR_CODE,
+                { message: "Error occurred while accessing the XML payload of the response" });
+                return err;
             }
         } else {
-            error err = error(AMAZONEC2_ERROR_CODE,
-            { message: "Error occurred while accessing the XML payload of the response" });
+            error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
             return err;
         }
-    } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred while invoking the amazonec2 API" });
-        return err;
     }
 }
