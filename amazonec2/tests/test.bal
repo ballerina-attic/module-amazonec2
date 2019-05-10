@@ -24,6 +24,7 @@ import ballerina/test;
 
 string testAccessKeyId = config:getAsString("ACCESS_KEY_ID");
 string testSecretAccessKey = config:getAsString("SECRET_ACCESS_KEY");
+string testSecurityToken = config:getAsString("SECURITY_TOKEN");
 string testRegion = config:getAsString("REGION");
 string testImageId = config:getAsString("IMAGE_ID");
 string testSourceImageId = config:getAsString("SOURCE_IMAGE_ID");
@@ -38,6 +39,7 @@ string testZoneName = "";
 AmazonEC2Configuration amazonec2Config = {
     accessKeyId: testAccessKeyId,
     secretAccessKey: testSecretAccessKey,
+    securityToken: testSecurityToken,
     region: testRegion
 };
 
