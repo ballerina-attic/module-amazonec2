@@ -96,9 +96,9 @@ An application on the instance retrieves the security credentials provided by th
       "Code" : "Success",
       "LastUpdated" : "2012-04-26T16:39:16Z",
       "Type" : "AWS-HMAC",
-      "AccessKeyId" : "ASIAIOSFODNN7EXAMPLE",
-      "SecretAccessKey" : "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
-      "Token" : "token",
+      "AccessKeyId" : "<ACCESSKEY_ID>",
+      "SecretAccessKey" : "<SECRETACCESSKEY>",
+      "Token" : "<TOKEN>",
       "Expiration" : "2017-05-17T15:09:54Z"
     }
     ```
