@@ -22,9 +22,9 @@ import ballerina/http;
 import ballerina/system;
 import ballerina/time;
 
-function generateSignature(http:Request request, string accessKeyId, string secretAccessKey, string region,
-                           string httpVerb, string requestURI, string payload, string canonicalQueryString )
-                           returns error? {
+function generateSignature(http:Request request, string accessKeyId, string secretAccessKey, string securityToken,
+                           string region, string httpVerb, string requestURI, string payload,
+                           string canonicalQueryString) returns error? {
     string canonicalRequest = "";
     string stringToSign = "";
     string payloadBuilder = "";
@@ -60,6 +60,9 @@ function generateSignature(http:Request request, string accessKeyId, string secr
 
     request.setHeader(CONTENT_TYPE, APPLICATION_URL_ENCODED);
     request.setHeader(X_AMZ_DATE, amzDateStr);
+    if (securityToken != "") {
+        request.setHeader(X_AMZ_SECURITY_TOKEN, securityToken);
+    }
     string host = SERVICE_NAME + "." + region + "." + "amazonaws.com";
     request.setHeader(HOST,host);
 

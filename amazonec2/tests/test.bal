@@ -144,7 +144,6 @@ function testDescribeImageAttribute() {
     var attribute = amazonEC2Client->describeImageAttribute(imgIds[0], "description");
     if (attribute is ImageAttribute) {
         if (attribute is DescriptionAttribute) {
-            io:println("Successfully described the image with an attribute: ", attribute);
             test:assertTrue(attribute.description.length() >= 0, msg = "Failed to describe an image with an attribute");
         }
     } else {

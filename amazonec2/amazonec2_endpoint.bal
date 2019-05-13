@@ -22,7 +22,7 @@ import ballerina/time;
 # AmazonEC2 Client object.
 # + accessKeyId - The access key of Amazon ec2 account
 # + secretAccessKey - The secret key of the Amazon ec2 account
-# + securityToken - When you are using temporary security credentials(accessKeyId, secretAccessKey), the API request
+# + securityToken - When you are using temporary security credentials (accessKeyId, secretAccessKey), the API request
 #                   must include a session token, which is returned along with those temporary credentials. AWS uses
 #                   the session token to validate the temporary security credentials.
 # + region - The AWS region
@@ -182,12 +182,8 @@ public remote function Client.runInstances(string imgId, int maxCount, int minCo
     canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -234,12 +230,8 @@ public remote function Client.describeInstances(string... instanceIds) returns E
     canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -283,12 +275,8 @@ public remote function Client.terminateInstances(string... instanceArray) return
 
     canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -331,12 +319,8 @@ public remote function Client.createImage(string instanceId, string name) return
         constructCanonicalString = constructCanonicalString.replace(" ", "+");
     }
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -384,12 +368,8 @@ public remote function Client.describeImages(string... imgIdArr) returns Image[]
     canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -429,12 +409,8 @@ public remote function Client.deregisterImage(string imgId) returns EC2ServiceRe
         "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -476,12 +452,8 @@ public remote function Client.describeImageAttribute(string amiId, string attrib
         "ImageId" + "=" + amiId + "&" + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -522,12 +494,8 @@ public remote function Client.copyImage(string name, string sourceImageId, strin
         sourceImageId + "&" + "SourceRegion" + "=" + sourceRegion + "&" + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -584,12 +552,8 @@ public remote function Client.createSecurityGroup(string groupName, string group
     }
 
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -653,12 +617,8 @@ public remote function Client.deleteSecurityGroup(string? groupId = (), string? 
     canonicalQueryString = canonicalQueryString + "Version" + "=" + API_VERSION;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -735,12 +695,8 @@ public remote function Client.createVolume(string availabilityZone, int? size = 
     }
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -780,12 +736,8 @@ public remote function Client.attachVolume(string device, string instanceId, str
         + instanceId + "&" + "Version" + "=" + API_VERSION + "&" + "VolumeId" + "=" + volumeId;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
@@ -825,12 +777,8 @@ public remote function Client.detachVolume(boolean force = false, string volumeI
         "Version" + "=" + API_VERSION + "&" + "VolumeId" + "=" + volumeId;
     string constructCanonicalString = "/?" + canonicalQueryString;
     request.setHeader(HOST, host);
-    string token = self.securityToken;
-    if (token != "") {
-        request.setHeader(X_AMZ_SECURITY_TOKEN, token);
-    }
-    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.region, GET, requestURI, "",
-        canonicalQueryString);
+    var signature = generateSignature(request, self.accessKeyId, self.secretAccessKey, self.securityToken, self.region,
+        GET, requestURI, "", canonicalQueryString);
 
     if (signature is error) {
         error err = error(AMAZONEC2_ERROR_CODE, { cause: signature,
