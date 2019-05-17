@@ -22,9 +22,9 @@ import ballerina/time;
 # AmazonEC2 Client object.
 # + accessKeyId - The access key of Amazon ec2 account
 # + secretAccessKey - The secret key of the Amazon ec2 account
-# + securityToken - When you are using temporary security credentials (accessKeyId, secretAccessKey), the API request
-#                   must include a session token, which is returned along with those temporary credentials. AWS uses
-#                   the session token to validate the temporary security credentials.
+# + securityToken - When you are using temporary security credentials (i.e., the accessKeyId and secretAccessKey),
+#                   the API request must include a session token, which is returned along with those temporary
+#                   credentials. AWS uses the session token to validate the temporary security credentials.
 # + region - The AWS region
 # + amazonClient - HTTP client endpoint config
 public type Client client object {
