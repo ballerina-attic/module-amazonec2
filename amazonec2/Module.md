@@ -46,22 +46,23 @@ in the Amazon EC2 client config.
 
 1. Navigate to [Amazon] (#https://aws.amazon.com/), and then click **Create an AWS Account**.
 
-   **Note:** If you previously signed in to the AWS Management Console using the root user credentials of the AWS account, click **Sign in** to use a different account. If you previously signed in to the console using the IAM credentials, sign-in using the credentials of the root account.
+   **Note:** If you previously signed in to the AWS Management Console using the root user credentials of the AWS account, click **Sign in** to use a different account. If you previously signed in to the console using the IAM credentials, sign in using the credentials of the root account.
 2. Then, click **Create a new AWS account** and follow the given instructions.
 
 Follow either of the methods explained below to obtain AWS credentials.
 
 ### Obtaining user credentials
 
-You can access the Amazon EC2 service using the root user credentials. However, these credentials allow full access to all resources in the account as you cannot restrict permission for root user credentials.
+You can access the Amazon EC2 service using the root user credentials. However, these credentials allow full access to all the resources in the account as you cannot restrict permission for root user credentials.
+
 If you want to restrict certain resources and allow controlled access to AWS services, then you can create IAM (Identity and Access Management) users in your AWS account. Follow the steps below to do this.
 
 ###### Follow the steps below to get an AWS Access Key for your AWS root account:
 
 1. Log in to the AWS Management Console.
-2. Hover over your company name in the right top menu and click "My Security Credentials".
-3. Scroll down to the "Access Keys" section.
-4. Click "Create New Access Key".
+2. Hover over your company name in the right top menu and click **My Security Credentials**.
+3. Scroll down to the **Access Keys** section.
+4. Click **Create New Access Key**.
 5. Copy both the Access Key ID (YOUR_AMAZON_EC2_KEY) and Secret Access Key (YOUR_AMAZON_EC2_SECRET).
 
 ###### Follow the steps below to get an AWS Access Key for an IAM user account:
@@ -73,8 +74,7 @@ If you want to restrict certain resources and allow controlled access to AWS ser
 5. Click **Create Access Key**.
 6. Click **Show User Security Credentials**.
 7. Copy and paste the Access Key ID and Secret Access Key values or click **Download Credentials** to download the credentials as a CSV (file).
-
-**Obtain the following parameters:**
+8. Obtain the following parameters:
 
 * Access key ID
 * Secret access key
@@ -83,7 +83,7 @@ If you want to restrict certain resources and allow controlled access to AWS ser
 ### Obtaining temporary security credentials using IAM roles
 
 Temporary credentials are primarily used with IAM roles. You can request temporary credentials that have a more restricted set of permissions than your standard IAM user. A benefit of temporary credentials is that they expire automatically after a set period of time. You have control over the duration that the credentials are valid. Temporary security credentials work similarly to the long term access key credentials that your IAM users can use.
-An application on the instance retrieves the security credentials provided by the role from the instance metadata item` iam/security-credentials/role-name`. The application is granted the permissions for the actions and resources that you have defined for the role through the security credentials associated with the role. These security credentials are temporary and we rotate them automatically.
+An application on the instance retrieves the security credentials provided by the role from the instance metadata item` iam/security-credentials/role-name`. The application is granted the permissions for the actions and resources that you have defined for the role through the security credentials associated with the role. These security credentials are temporary and are rotated automatically.
 
 1. Launch an EC2 Instance. For instructions, go to the [EC2 documentation] (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html).
 2. Get the SSH key (.pem file) that is provided by Amazon when you launch the instance.
