@@ -58,7 +58,7 @@ final VolumeAttachmentStatus BUSY = "busy";
 public type AmazonEC2Configuration record {
     string accessKeyId = "";
     string secretAccessKey = "";
-    string securityToken = "";
+    string? securityToken = ();
     string region = "";
     http:ClientEndpointConfig clientConfig = {};
 };

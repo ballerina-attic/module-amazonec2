@@ -31,7 +31,7 @@ public type Client client object {
 
     public string accessKeyId;
     public string secretAccessKey;
-    public string securityToken;
+    public string? securityToken = ();
     public string region;
     public http:Client amazonClient;
 
@@ -40,7 +40,10 @@ public type Client client object {
         self.amazonClient = new(ec2Endpoint, config = amazonec2Config.clientConfig);
         self.accessKeyId = amazonec2Config.accessKeyId;
         self.secretAccessKey = amazonec2Config.secretAccessKey;
-        self.securityToken = amazonec2Config.securityToken;
+        var token = amazonec2Config.securityToken;
+        if ((token is string) && token != "") {
+            self.securityToken = token;
+        }
         self.region = amazonec2Config.region;
     }
 
