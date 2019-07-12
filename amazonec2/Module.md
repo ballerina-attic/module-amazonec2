@@ -38,7 +38,7 @@ First, import the `wso2/amazonec2` module into the Ballerina project.
 import wso2/amazonec2;
 ```
 The Amazon EC2 connector can be instantiated using the accessKeyId, secretAccessKey, securityToken, and region
-in the Amazon EC2 client config.
+of the Amazon EC2 client config.
 
 **Obtaining AWS credentials to Run the Sample**
 
@@ -53,14 +53,14 @@ Follow either of the methods explained below to obtain AWS credentials.
 
 ### Obtaining user credentials
 
-You can access the Amazon EC2 service using the root user credentials. However, these credentials allow full access to all the resources in the account as you cannot restrict permission for root user credentials.
+You can access the Amazon EC2 service using the root user credentials. However, these credentials allow full access to all the resources in the account as you cannot restrict permission of root user credentials.
 
 If you want to restrict certain resources and allow controlled access to AWS services, then you can create IAM (Identity and Access Management) users in your AWS account. Follow the steps below to do this.
 
 ###### Follow the steps below to get an AWS Access Key for your AWS root account:
 
 1. Log in to the AWS Management Console.
-2. Hover over your company name in the right top menu and click **My Security Credentials**.
+2. Hover over your company name in the right top menu, and click **My Security Credentials**.
 3. Scroll down to the **Access Keys** section.
 4. Click **Create New Access Key**.
 5. Copy both the Access Key ID (YOUR_AMAZON_EC2_KEY) and Secret Access Key (YOUR_AMAZON_EC2_SECRET).
@@ -69,7 +69,7 @@ If you want to restrict certain resources and allow controlled access to AWS ser
 
 1. Sign in to the AWS Management Console and open the IAM Console.
 2. In the navigation pane, click **Users**.
-3. Select the name of the desired user, and then click **User Actions** from the top menu.
+3. Select the name of the desired user, and then click **User Actions** in the top menu.
 4. Click **Manage Access Keys**.
 5. Click **Create Access Key**.
 6. Click **Show User Security Credentials**.
@@ -83,12 +83,13 @@ If you want to restrict certain resources and allow controlled access to AWS ser
 ### Obtaining temporary security credentials using IAM roles
 
 Temporary credentials are primarily used with IAM roles. You can request temporary credentials that have a more restricted set of permissions than your standard IAM user. A benefit of temporary credentials is that they expire automatically after a set period of time. You have control over the duration that the credentials are valid. Temporary security credentials work similarly to the long term access key credentials that your IAM users can use.
-An application on the instance retrieves the security credentials provided by the role from the instance metadata item` iam/security-credentials/role-name`. The application is granted the permissions for the actions and resources that you have defined for the role through the security credentials associated with the role. These security credentials are temporary and are rotated automatically.
+An application on the instance retrieves the security credentials provided by the instance metadata item` iam/security-credentials/role-name` of the role.
+The application is granted the permissions for the actions and resources that you have defined for the role through the security credentials associated with the role. These security credentials are temporary and are rotated automatically.
 
 1. Launch an EC2 Instance. For instructions, go to the [EC2 documentation] (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html).
 2. Get the SSH key (.pem file) that is provided by Amazon when you launch the instance.
-3. Connect your instance using an SSH client. For instructions go to, [AWS Documentation] (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html#AccessingInstancesLinuxSSHClient).
-4. Retrieve the security Credentials from your Instance metadata. For example, the following command retrieves the security credentials for an IAM role named "ec2access".
+3. Connect your instance using an SSH client. For instructions, go to [AWS Documentation] (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AccessingInstancesLinux.html#AccessingInstancesLinuxSSHClient).
+4. Retrieve the security credentials from the metadata of your instance. For example, the following command retrieves the security credentials for an IAM role named "ec2access".
     ```
     curl http://169.254.169.254/latest/meta-data/iam/security-credentials/ec2access
     ```
