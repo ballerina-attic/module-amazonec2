@@ -14,6 +14,7 @@ The Amazon EC2 connector allows you to access the Amazon EC2 REST API through ba
     ```.conf
     ACCESS_KEY_ID="<your_access_key_id>"
     SECRET_ACCESS_KEY="<your_secret_access_key_id>"
+    SECURITY_TOKEN="<security_token>"
     REGION="<your_current_region>"
     IMAGE_ID="<The ID of the AMI, which is required to launch an instance>"
     SOURCE_IMAGE_ID="<The ID of the AMI to copy>"

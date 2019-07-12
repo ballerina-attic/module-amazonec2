@@ -38,6 +38,7 @@ In order for you to use the Amazon EC2 Connector, first you need to create a Ama
 amazonec2:AmazonEC2Configuration amazonec2Config = {
     accessKeyId: "",
     secretAccessKey: "",
+    securityToken: "",
     region: ""
 };
    
@@ -53,6 +54,7 @@ import wso2/amazonec2;
 amazonec2:AmazonEC2Configuration amazonec2Config = {
     accessKeyId: "",
     secretAccessKey: "",
+    securityToken: "",
     region: ""
 };
 
