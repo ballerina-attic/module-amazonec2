@@ -16,8 +16,7 @@
 // under the License.
 //
 
-import ballerina/io;
-import ballerina/time;
+import ballerina/http;
 
 # The supported instance state by this module.
 public type InstanceState "pending"|"running"|"shutting-down"|"terminated"|"stopping"|"stopped";
@@ -60,7 +59,7 @@ public type AmazonEC2Configuration record {
     string secretAccessKey = "";
     string? securityToken = ();
     string region = "";
-    http:ClientEndpointConfig clientConfig = {};
+    http:ClientConfiguration clientConfig = {};
 };
 
 # Representation of an EC2 instance.

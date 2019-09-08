@@ -16,11 +16,12 @@
 // under the License.
 //
 
-import ballerina/config;
-import ballerina/http;
 import ballerina/log;
-import ballerina/runtime;
 import ballerina/test;
+import ballerina/time;
+import ballerina/io;
+import ballerina/runtime;
+import ballerina/config;
 
 string testAccessKeyId = config:getAsString("ACCESS_KEY_ID");
 string testSecretAccessKey = config:getAsString("SECRET_ACCESS_KEY");
@@ -45,21 +46,21 @@ AmazonEC2Configuration amazonec2Config = {
 
 Client amazonEC2Client = new(amazonec2Config);
 
-@test:Config
+@test:Config {}
 function testCreateSecurityGroup() {
     log:printInfo("amazonEC2Client -> createSecurityGroup()");
 
     time:Time time = time:currentTime();
-    int currentTimeMills = time.time;
-    string currentTimeStamp = string.convert(currentTimeMills / 1000);
+    int currentTimeMills = (time.time / 1000);
+    string currentTimeStamp = currentTimeMills.toString();
     var securityGroup = amazonEC2Client->createSecurityGroup("Ballerina_test_group" + currentTimeStamp,
         "Ballerina Test Group");
     if (securityGroup is SecurityGroup) {
         io:println("Successfully created the security group: ", securityGroup);
-        testGroupId = untaint securityGroup.groupId;
+        testGroupId = <@untainted> securityGroup.groupId;
         test:assertTrue(testGroupId.length() > 0, msg = "Failed to create the security group");
     } else {
-        test:assertFail(msg = <string>securityGroup.detail().message);
+        test:assertFail(msg = <string>securityGroup.detail()["message"]);
     }
 }
 
@@ -71,17 +72,21 @@ function testRunInstances() {
     log:printInfo("amazonEC2Client -> runInstances()");
     var insts = amazonEC2Client->runInstances(testImageId, 1, 1, securityGroupId = [testGroupId]);
     if (insts is error) {
-        test:assertFail(msg = <string>insts.detail().message);
+        test:assertFail(msg = <string>insts.detail()["message"]);
     } else {
         io:println("Successfully ran the instance: ", insts);
         arr = insts;
-        testInstanceIds = arr.map(function (EC2Instance inst) returns (string) {
+        testInstanceIds = <@untainted> arr.map(function (EC2Instance inst) returns (string) {
                 return inst.id;
             });
-        testImageIds = arr.map(function (EC2Instance inst) returns (string) {
+        testImageIds = <@untainted> arr.map(function (EC2Instance inst) returns (string) {
             return inst.imageId;
         });
-        testZoneName = insts[0].zone;
+        testZoneName = <@untainted> insts[0].zone;
+
+        io:println("Waiting for instance to run...");
+        pollAndWait(1000, 60, testInstanceIds[0], isInstanceRunning);
+
         test:assertEquals(testImageId, testImageIds[0], msg = "Failed to run the instances");
     }
 }
@@ -90,11 +95,10 @@ function testRunInstances() {
     dependsOn: ["testRunInstances"]
 }
 function testDescribeInstances() {
-    runtime:sleep(50000);
     log:printInfo("amazonEC2Client -> describeInstances()");
     var reservations = amazonEC2Client->describeInstances(testInstanceIds[0]);
     if (reservations is error) {
-        test:assertFail(msg = <string>reservations.detail().message);
+        test:assertFail(msg = <string>reservations.detail()["message"]);
     } else {
         io:println("Successfully described the instances: ", reservations);
         string instanceId = reservations[0].id;
@@ -106,16 +110,15 @@ function testDescribeInstances() {
     dependsOn: ["testDescribeInstances"]
 }
 function testCreateImage() {
-    runtime:sleep(40000);
     log:printInfo("amazonEC2Client -> testCreateImage()");
     var image = amazonEC2Client->createImage(testInstanceIds[0], "Ballerina test instance image");
     if (image is Image) {
         io:println("Successfully created the image: ", image);
         string image_id = (image.imageId);
-        imgIds = untaint [image_id];
+        imgIds = <@untainted> [image_id];
         test:assertTrue(image_id.length() > 0, msg = "Failed to create the image");
     } else {
-        test:assertFail(msg = <string>image.detail().message);
+        test:assertFail(msg = <string>image.detail()["message"]);
     }
 }
 
@@ -123,11 +126,10 @@ function testCreateImage() {
     dependsOn: ["testCreateImage"]
 }
 function testDescribeImages() {
-    runtime:sleep(40000);
     log:printInfo("amazonEC2Client -> describeImages()");
     var image = amazonEC2Client->describeImages(imgIds[0]);
     if (image is error) {
-        test:assertFail(msg = <string>image.detail().message);
+        test:assertFail(msg = <string>image.detail()["message"]);
     } else {
         io:println("Successfully described the images: ", image);
         string imageId = image[0].imageId;
@@ -139,7 +141,6 @@ function testDescribeImages() {
     dependsOn: ["testDescribeImages"]
 }
 function testDescribeImageAttribute() {
-    runtime:sleep(90000);
     log:printInfo("amazonEC2Client -> describeImageAttribute()");
     var attribute = amazonEC2Client->describeImageAttribute(imgIds[0], "description");
     if (attribute is ImageAttribute) {
@@ -147,7 +148,7 @@ function testDescribeImageAttribute() {
             test:assertTrue(attribute.description.length() >= 0, msg = "Failed to describe an image with an attribute");
         }
     } else {
-        test:assertFail(msg = <string>attribute.detail().message);
+        test:assertFail(msg = <string>attribute.detail()["message"]);
     }
 }
 
@@ -155,7 +156,6 @@ function testDescribeImageAttribute() {
     dependsOn: ["testDescribeImageAttribute"]
 }
 function testDeregisterImage() {
-    runtime:sleep(40000);
     log:printInfo("amazonEC2Client -> deregisterImage()");
     var serviceResponse = amazonEC2Client->deregisterImage(imgIds[0]);
     if (serviceResponse is EC2ServiceResponse) {
@@ -163,7 +163,7 @@ function testDeregisterImage() {
         boolean success = serviceResponse.success;
         test:assertTrue(success, msg = "Failed to deregister the image");
     } else {
-        test:assertFail(msg = <string>serviceResponse.detail().message);
+        test:assertFail(msg = <string>serviceResponse.detail()["message"]);
     }
 }
 
@@ -171,14 +171,13 @@ function testDeregisterImage() {
     dependsOn: ["testDeregisterImage"]
 }
 function testCopyImage() {
-    runtime:sleep(50000);
     log:printInfo("amazonEC2Client -> copyImage()");
     var image = amazonEC2Client->copyImage("My-Copy-AMI", testSourceImageId, testSourceRegion);
     if (image is Image) {
         io:println("Successfully copied the image: ", image);
         test:assertTrue(image.imageId.length() > 0, msg = "Failed to copy the image");
     } else {
-        test:assertFail(msg = <string>image.detail().message);
+        test:assertFail(msg = <string>image.detail()["message"]);
     }
 }
 
@@ -186,16 +185,15 @@ function testCopyImage() {
     dependsOn: ["testRunInstances"]
 }
 function testCreateVolume() {
-    runtime:sleep(50000);
     log:printInfo("amazonEC2Client -> createVolume()");
     string standard = "standard";
     var volume = amazonEC2Client->createVolume(testZoneName, size = 8, volumeType = standard);
     if (volume is Volume) {
         io:println("Successfully created the volume: ", volume);
-        testVolumeId = untaint volume.volumeId;
+        testVolumeId = <@untainted> volume.volumeId;
         test:assertEquals(volume.volumeType, standard, msg = "Failed to create a volume");
     } else {
-        test:assertFail(msg = <string>volume.detail().message);
+        test:assertFail(msg = <string>volume.detail()["message"]);
     }
 }
 
@@ -203,14 +201,14 @@ function testCreateVolume() {
     dependsOn: ["testCreateVolume"]
 }
 function testAttachVolume() {
-    runtime:sleep(40000);
+    runtime:sleep(5000);
     log:printInfo("amazonEC2Client -> attachVolume()");
     var attachment = amazonEC2Client->attachVolume("/dev/sdh", testInstanceIds[0], testVolumeId);
     if (attachment is AttachmentInfo) {
         io:println("Successfully attached the volume: ", attachment);
         test:assertEquals(attachment.volumeId, testVolumeId, msg = "Failed to attach the volume");
     } else {
-        test:assertFail(msg = <string>attachment.detail().message);
+        test:assertFail(msg = <string>attachment.detail()["message"]);
     }
 }
 
@@ -218,14 +216,13 @@ function testAttachVolume() {
     dependsOn: ["testAttachVolume"]
 }
 function testDetachVolume() {
-    runtime:sleep(40000);
     log:printInfo("amazonEC2Client -> detachVolume()");
     var attachment = amazonEC2Client->detachVolume(testVolumeId);
     if (attachment is AttachmentInfo) {
         io:println("Successfully detached the volume: ", attachment);
         test:assertEquals(attachment.volumeId, testVolumeId, msg = "Failed to detach the volume");
     } else {
-        test:assertFail(msg = <string>attachment.detail().message);
+        test:assertFail(msg = <string>attachment.detail()["message"]);
     }
 }
 
@@ -233,11 +230,10 @@ function testDetachVolume() {
     dependsOn: ["testDetachVolume"]
 }
 function testTerminateInstances() {
-    runtime:sleep(60000);
     log:printInfo("amazonEC2Client -> terminateInstances()");
     var instance = amazonEC2Client->terminateInstances(testInstanceIds[0]);
     if (instance is error) {
-        test:assertFail(msg = <string>instance.detail().message);
+        test:assertFail(msg = <string>instance.detail()["message"]);
     } else {
         io:println("Successfully terminated the instance: ", instance);
         string instanceId = (instance[0].id);
@@ -249,7 +245,9 @@ function testTerminateInstances() {
     dependsOn: ["testTerminateInstances"]
 }
 function testDeleteSecurityGroup() {
-    runtime:sleep(100000);
+    io:println("Waiting for instance to shut down...");
+    pollAndWait(1000, 120, testInstanceIds[0], isInstanceTerminated);
+
     log:printInfo("amazonEC2Client -> deleteSecurityGroup()");
     var serviceResponse = amazonEC2Client->deleteSecurityGroup(groupId = testGroupId);
     if (serviceResponse is EC2ServiceResponse) {
@@ -257,6 +255,6 @@ function testDeleteSecurityGroup() {
         boolean success = serviceResponse.success;
         test:assertTrue(success, msg = "Failed to delete a security group");
     } else {
-        test:assertFail(msg = <string>serviceResponse.detail().message);
+        test:assertFail(msg = <string>serviceResponse.detail()["message"]);
     }
 }

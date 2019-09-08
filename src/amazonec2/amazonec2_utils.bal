@@ -19,8 +19,9 @@
 import ballerina/crypto;
 import ballerina/encoding;
 import ballerina/http;
-import ballerina/system;
 import ballerina/time;
+import ballerina/stringutils;
+import ballerina/lang.'array as arrays;
 
 function generateSignature(http:Request request, string accessKeyId, string secretAccessKey, string? securityToken,
                            string region, string httpVerb, string requestURI, string payload,
@@ -68,49 +69,49 @@ function generateSignature(http:Request request, string accessKeyId, string secr
 
     canonicalRequest = httpVerb;
     canonicalRequest = canonicalRequest + "\n";
-    var value = http:encode(requestURI, UTF_8);
+    var value = encoding:encodeUriComponent(requestURI, UTF_8);
     if (value is string) {
         encodedrequestURIValue = value;
     } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int"});
+        error err = error(AMAZONEC2_ERROR_CODE, message = "Error occurred when converting to int");
         panic err;
     }
-    encodedrequestURIValue = encodedrequestURIValue.replace("%2F", "/");
+    encodedrequestURIValue = stringutils:replace(encodedrequestURIValue, "%2F", "/");
     canonicalRequest = canonicalRequest + encodedrequestURIValue;
     canonicalRequest = canonicalRequest + "\n";
-    var canonicalValue = http:encode(canonicalQueryString, UTF_8);
+    var canonicalValue = encoding:encodeUriComponent(canonicalQueryString, UTF_8);
     if (canonicalValue is string) {
         encodedCanonicalQueryString = canonicalValue;
     } else {
-        error err = error(AMAZONEC2_ERROR_CODE, { message: "Error occurred when converting to int"});
+        error err = error(AMAZONEC2_ERROR_CODE, message = "Error occurred when converting to int");
         panic err;
     }
-    encodedCanonicalQueryString = encodedCanonicalQueryString.replace("%3D","=");
-    encodedCanonicalQueryString = encodedCanonicalQueryString.replace("%26","&");
+    encodedCanonicalQueryString = stringutils:replace(encodedCanonicalQueryString,"%3D","=");
+    encodedCanonicalQueryString = stringutils:replace(encodedCanonicalQueryString,"%26","&");
     canonicalRequest = canonicalRequest + encodedCanonicalQueryString;
     canonicalRequest = canonicalRequest + "\n";
 
     if (payload == "") {
-        canonicalHeaders = canonicalHeaders + X_AMZ_CONTENT_TYPE.toLower();
+        canonicalHeaders = canonicalHeaders + X_AMZ_CONTENT_TYPE.toLowerAscii();
         canonicalHeaders = canonicalHeaders + ":";
-        canonicalHeaders = canonicalHeaders + request.getHeader(X_AMZ_CONTENT_TYPE.toLower());
+        canonicalHeaders = canonicalHeaders + request.getHeader(X_AMZ_CONTENT_TYPE.toLowerAscii());
         canonicalHeaders = canonicalHeaders + "\n";
-        signedHeader = signedHeader + X_AMZ_CONTENT_TYPE.toLower();
+        signedHeader = signedHeader + X_AMZ_CONTENT_TYPE.toLowerAscii();
         signedHeader = signedHeader + ";";
     }
 
-    canonicalHeaders = canonicalHeaders + HOST.toLower();
+    canonicalHeaders = canonicalHeaders + HOST.toLowerAscii();
     canonicalHeaders = canonicalHeaders + ":";
-    canonicalHeaders = canonicalHeaders + request.getHeader(HOST.toLower());
+    canonicalHeaders = canonicalHeaders + request.getHeader(HOST.toLowerAscii());
     canonicalHeaders = canonicalHeaders + "\n";
-    signedHeader = signedHeader + HOST.toLower();
+    signedHeader = signedHeader + HOST.toLowerAscii();
     signedHeader = signedHeader + ";";
 
-    canonicalHeaders = canonicalHeaders + X_AMZ_DATE.toLower();
+    canonicalHeaders = canonicalHeaders + X_AMZ_DATE.toLowerAscii();
     canonicalHeaders = canonicalHeaders + ":";
-    canonicalHeaders = canonicalHeaders + request.getHeader(X_AMZ_DATE.toLower());
+    canonicalHeaders = canonicalHeaders + request.getHeader(X_AMZ_DATE.toLowerAscii());
     canonicalHeaders = canonicalHeaders + "\n";
-    signedHeader = signedHeader + X_AMZ_DATE.toLower();
+    signedHeader = signedHeader + X_AMZ_DATE.toLowerAscii();
     signedHeader = signedHeader;
 
     canonicalRequest = canonicalRequest + canonicalHeaders;
@@ -122,7 +123,7 @@ function generateSignature(http:Request request, string accessKeyId, string secr
     payloadBuilder = payload;
     requestPayload = "";
 
-    requestPayload = encoding:encodeHex(crypto:hashSha256(payloadBuilder.toByteArray(UTF_8))).toLower();
+    requestPayload = arrays:toBase16(crypto:hashSha256(payloadBuilder.toBytes())).toLowerAscii();
     canonicalRequest = canonicalRequest + requestPayload;
 
     //Start creating the string to sign
@@ -138,14 +139,14 @@ function generateSignature(http:Request request, string accessKeyId, string secr
     stringToSign = stringToSign + "/";
     stringToSign = stringToSign + TERMINATION_STRING;
     stringToSign = stringToSign + "\n";
-    stringToSign = stringToSign + encoding:encodeHex(crypto:hashSha256(canonicalRequest.toByteArray(UTF_8))).toLower();
+    stringToSign = stringToSign + arrays:toBase16(crypto:hashSha256(canonicalRequest.toBytes())).toLowerAscii();
 
     signValue = (AWS4 + secretAccessKey);
 
-    byte[] kDate = crypto:hmacSha256(shortDateStr.toByteArray(UTF_8), signValue.toByteArray(UTF_8));
-    byte[] kRegion = crypto:hmacSha256(region.toByteArray(UTF_8), kDate);
-    byte[] kService = crypto:hmacSha256(SERVICE_NAME.toByteArray(UTF_8), kRegion);
-    byte[] signingKey = crypto:hmacSha256("aws4_request".toByteArray(UTF_8), kService);
+    byte[] kDate = crypto:hmacSha256(shortDateStr.toBytes(), signValue.toBytes());
+    byte[] kRegion = crypto:hmacSha256(region.toBytes(), kDate);
+    byte[] kService = crypto:hmacSha256(SERVICE_NAME.toBytes(), kRegion);
+    byte[] signingKey = crypto:hmacSha256("aws4_request".toBytes(), kService);
 
     authHeader = authHeader + (AWS4_HMAC_SHA256);
     authHeader = authHeader + (" ");
@@ -168,12 +169,12 @@ function generateSignature(http:Request request, string accessKeyId, string secr
     authHeader = authHeader + (SIGNATURE);
     authHeader = authHeader + ("=");
 
-    string encodedStr = encoding:encodeHex(crypto:hmacSha256(stringToSign.toByteArray(UTF_8), signingKey));
-    authHeader = authHeader + encodedStr.toLower();
+    string encodedStr = arrays:toBase16(crypto:hmacSha256(stringToSign.toBytes(), signingKey));
+    authHeader = authHeader + encodedStr.toLowerAscii();
     request.setHeader(AUTHORIZATION, authHeader);
 }
 
 function setResponseError(xml xmlResponse) returns error {
-    error err = error(AMAZONEC2_ERROR_CODE, { message : xmlResponse["Message"].getTextValue()});
+    error err = error(AMAZONEC2_ERROR_CODE, message = xmlResponse["Message"].getTextValue());
     return err;
 }
