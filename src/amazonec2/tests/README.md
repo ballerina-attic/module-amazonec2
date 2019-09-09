@@ -5,7 +5,7 @@ The Amazon EC2 connector allows you to access the Amazon EC2 REST API through ba
 ## Compatibility
 | Ballerina Version | Amazon EC2 API Version |
 |-------------------|----------------------  |
-| 0.991.0           | 2016-11-15             |
+| 1.0.0             | 2016-11-15             |
 
 ###### Running tests
 
@@ -25,7 +25,6 @@ The Amazon EC2 connector allows you to access the Amazon EC2 REST API through ba
 3. Run tests :
 
     ```ballerina
-    ballerina init
-    ballerina test amazonec2 --config ballerina.conf
+    ballerina test amazonec2 --b7a.config.file=ballerina.conf
     ```
 ```

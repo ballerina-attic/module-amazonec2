@@ -8,7 +8,7 @@ The following section provide you the details on connector operations.
 ## Compatibility
 | Ballerina Language Version | Amazon EC2 API version  |
 | -------------------------- | --------------------   |
-| 0.991.0                    | 2016-11-15             |
+| 1.0.0                      | 2016-11-15             |
 
 
 The following sections provide you with information on how to use the Ballerina Amazon EC2 connector.
@@ -66,7 +66,7 @@ public function main() {
    if (describeInstancesResponse is amazonec2:EC2Instance[]) {
        io:println("Instance descriptions: ", describeInstancesResponse);
    } else {
-       io:println("Error: ", describeInstancesResponse.detail().message);
+       io:println("Error: ", describeInstancesResponse);
    }
 }
 ```

@@ -27,7 +27,7 @@ AMIs with these operations.
 ## Compatibility
 |                    |    Version     |
 |:------------------:|:--------------:|
-| Ballerina Language |   0.991.0      |
+| Ballerina Language |   1.0.0        |
 | Amazon EC2 API     |   2016-11-15   |
 
 ## Sample
@@ -138,7 +138,7 @@ If it is unsuccessful, the response is an `error`.
 if (runInstancesResponse is amazonec2:EC2Instance[]) {
     io:println("Successfully ran instances: ", runInstancesResponse);
 } else {
-    io:println("Error: ", runInstancesResponse.detail().message);
+    io:println("Error: ", runInstancesResponse);
 }
 ```
 
@@ -149,7 +149,7 @@ var describeInstancesResponse = amazonEC2Client->describeInstances("ami-0ba4ce8c
 if (describeInstancesResponse is amazonec2:EC2Instance[]) {
     io:println("Instance descriptions: ", describeInstancesResponse);
 } else {
-    io:println("Error: ", describeInstancesResponse.detail().message);
+    io:println("Error: ", describeInstancesResponse);
 }
 ```
 
@@ -160,7 +160,7 @@ var terminationResponse = amazonEC2Client->terminateInstances("ami-0ba4ce8cbsffd
 if (terminationResponse is amazonec2:EC2Instance[]) {
     io:println("Successfully terminated instance(s): ", terminationResponse);
 } else {
-    io:println("Error: ", terminationResponse.detail().message);
+    io:println("Error: ", terminationResponse);
 }
 ```
 
@@ -171,7 +171,7 @@ var newImage = amazonEC2Client->createImage("ami-0ba4ce8cbsffd4e6333", "Test Ima
 if (newImage is amazonec2:Image) {
     io:println("Successfully created a new image: ", newImage);
 } else {
-    io:println("Error: ", newImage.detail().message);
+    io:println("Error: ", newImage);
 }
 ```
 
@@ -182,7 +182,7 @@ var describeImageResponse = amazonEC2Client->describeImages("ami-0ba4ce8cb48ssfs
 if (describeImageResponse is amazonec2:Image[]) {
     io:println("Successfully described the image: ", describeImageResponse);
 } else {
-    io:println("Error: ", describeImageResponse.detail().message);
+    io:println("Error: ", describeImageResponse);
 }
 ```
 
@@ -193,7 +193,7 @@ var imageAttributeResponse = amazonEC2Client->describeImageAttribute("ami-0ba4ce
 if (imageAttributeResponse is amazonec2:ImageAttribute) {
     io:println("Successfully described an image with an attribute: ", imageAttributeResponse);
 } else {
-    io:println("Error: ", imageAttributeResponse.detail().message);
+    io:println("Error: ", imageAttributeResponse);
 }
 ```
 
@@ -205,7 +205,7 @@ var deregisterImage = amazonEC2Client->deregisterImage("ami-0ba4ce8cb48ssfsfs");
 if (deregisterImage is amazonec2:EC2ServiceResponse) {
     io:println("Successfully deregistered the image: ", deregisterImage);
 } else {
-    io:println("Error: ", deregisterImage.detail().message);
+    io:println("Error: ", deregisterImage);
 }
 ```
 
@@ -217,7 +217,7 @@ var copyImage = amazonEC2Client->copyImage("Copy_Image", "ami-0ba423rr4gtcb48ssf
 if (copyImage is amazonec2:Image) {
     io:println("Successfully copied the image to the current region: ", copyImage);
 } else {
-    io:println("Error: ", copyImage.detail().message);
+    io:println("Error: ", copyImage);
 }
 ```
 
@@ -229,7 +229,7 @@ var newVolume = amazonEC2Client->createVolume("us-west-2c", size = 8);
 if (newVolume is amazonec2:Volume) {
     io:println("Successfully created a new volume: ", newVolume);
 } else {
-    io:println("Error: ", newVolume.detail().message);
+    io:println("Error: ", newVolume);
 }
 ```
 
@@ -241,7 +241,7 @@ var attachmentInfo = amazonEC2Client->attachVolume("/dev/sdh", "ami-0ba4ce8cssdf
 if (attachmentInfo is amazonec2:AttachmentInfo ) {
     io:println("Successfully attached volume: ", attachmentInfo);
 } else {
-    io:println("Error: ", attachmentInfo.detail().message);
+    io:println("Error: ", attachmentInfo);
 }
 ```
 
@@ -253,7 +253,7 @@ var detachmentInfo = amazonEC2Client->detachVolume(volumeId);
 if (detachmentInfo is amazonec2:AttachmentInfo) {
     io:println("Successfully detached the volume: ", detachmentInfo);
 } else {
-    io:println("Error: ", detachmentInfo.detail().message);
+    io:println("Error: ", detachmentInfo);
 }
 ```
 
@@ -264,7 +264,7 @@ var newSecurityGroup = amazonEC2Client->createSecurityGroup("New_ballerina_group
 if (newSecurityGroup is amazonec2:SecurityGroup) {
     io:println("Successfully created a new security group: ", newSecurityGroup);
 } else {
-     io:println("Error: ", newSecurityGroup.detail().message);
+     io:println("Error: ", newSecurityGroup);
 }
 
 ```
@@ -277,7 +277,7 @@ var deleteSecurityGroupResponse = amazonEC2Client->deleteSecurityGroup(groupId =
 if (deleteSecurityGroupResponse is amazonec2:EC2ServiceResponse) {
     io:println("Successfully deleted the security group: ", deleteSecurityGroupResponse);
 } else {
-    io:println("Error: ", deleteSecurityGroupResponse.detail().message);
+    io:println("Error: ", deleteSecurityGroupResponse);
 }
 ```
 
@@ -306,18 +306,18 @@ public function main() {
         io:println("Successfully ran the instance: ", newInstances);
         arr = newInstances;
     } else {
-        io:println("Error: ", newInstances.detail().message);
+        io:println("Error: ", newInstances);
     }
 
     runtime:sleep(20000); // wait for a bit before terminating the new instance
 
     string[] instIds = arr.map(function (amazonec2:EC2Instance inst) returns (string) {return inst.id;});
 
-    var describeInstances = amazonEC2Client->describeInstances(instIds[0]);
+    var describeInstances = amazonEC2Client->describeInstances(<@untainted> instIds[0]);
     if (describeInstances is amazonec2:EC2Instance[]) {
         io:println("Successfully described the instance: ", describeInstances);
     } else {
-        io:println("Error: ", describeInstances.detail().message);
+        io:println("Error: ", describeInstances);
     }
 
     var terminated = amazonEC2Client->terminateInstances(instIds[0]);
@@ -326,7 +326,7 @@ public function main() {
         string instanceId = (terminated[0].id);
         io:println("Instance ID: ", instanceId);
     } else {
-        io:println("Error: ", terminated.detail().message);
+        io:println("Error: ", terminated);
     }
 }
 ```
@@ -371,92 +371,92 @@ public function main() {
     string deviceName = "/dev/sdh"; // The device name (for example, /dev/sdh or xvdh).
 
     amazonec2:EC2Instance[] arr;
-    string testGroupId;
+    string testGroupId = "";
     string zoneName = "";
     string[] instIds = [];
 
     var newSecurityGroup = amazonEC2Client->createSecurityGroup(groupName, "Test Ballerina Group in AmazonEC2 instance");
     if (newSecurityGroup is amazonec2:SecurityGroup) {
         io:println("Successfully created a new security group: ", newSecurityGroup);
-        testGroupId = untaint newSecurityGroup.groupId;
+        testGroupId = <@untainted> newSecurityGroup.groupId;
     } else {
-        io:println("Error: ", newSecurityGroup.detail().message);
+        io:println("Error: ", newSecurityGroup);
     }
 
     var newInstances = amazonEC2Client->runInstances(imageId, 1, 1, securityGroupId = [testGroupId]);
     if (newInstances is amazonec2:EC2Instance[]) {
         io:println("Successfully ran the instance: ", newInstances);
         arr = newInstances;
-        instIds = arr.map(function (EC2Instance inst) returns (string) {return inst.id;});
+        instIds = arr.map(function (amazonec2:EC2Instance inst) returns (string) {return inst.id;});
         zoneName = newInstances[0].zone;
     } else {
-        io:println("Error: ", newInstances.detail().message);
+        io:println("Error: ", newInstances);
     }
 
     runtime:sleep(60000); // wait a bit until launch an instance.
 
-    var describeInstances = amazonEC2Client->describeInstances(instIds[0]);
+    var describeInstances = amazonEC2Client->describeInstances(<@untainted> instIds[0]);
     if (describeInstances is amazonec2:EC2Instance[]) {
         io:println("Successfully described the instance: ", describeInstances);
     } else {
-        io:println("Error: ", describeInstances.detail().message);
+        io:println("Error: ", describeInstances);
     }
 
-    var newImage = amazonEC2Client->createImage(instIds[0], imageName);
+    var newImage = amazonEC2Client->createImage(<@untainted> instIds[0], imageName);
     string id = "";
     if (newImage is amazonec2:Image) {
         io:println("Successfully created a new image: ", newImage);
         id = newImage.imageId;
     } else {
-        io:println("Error: ", newImage.detail().message);
+        io:println("Error: ", newImage);
     }
 
     runtime:sleep(60000);// wait until the image creates.
 
-    var deregisterImage = amazonEC2Client->deregisterImage(untaint id);
+    var deregisterImage = amazonEC2Client->deregisterImage(<@untainted> id);
     if (deregisterImage is amazonec2:EC2ServiceResponse) {
         io:println("Successfully deregistered the image: ", deregisterImage);
     } else {
-        io:println("Error: ", deregisterImage.detail().message);
+        io:println("Error: ", deregisterImage);
     }
 
     var describeImageResponse = amazonEC2Client->describeImages(imageId);
     if (describeImageResponse is amazonec2:Image[]) {
         io:println("Image description: ", describeImageResponse);
     } else {
-        io:println("Error: ", describeImageResponse.detail().message);
+        io:println("Error: ", describeImageResponse);
     }
 
     var imageAttributeResponse = amazonEC2Client->describeImageAttribute(imageId, "description");
     if (imageAttributeResponse is amazonec2:ImageAttribute) {
         io:println("Successfully described an image with an attribute: ", imageAttributeResponse);
     } else {
-        io:println("Error: ", imageAttributeResponse.detail().message);
+        io:println("Error: ", imageAttributeResponse);
     }
 
     var copyImage = amazonEC2Client->copyImage("Copy_Image", sourceImageId, sourceRegion);
     if (copyImage is amazonec2:Image) {
         io:println("Successfully copy the image to the current region: ", copyImage);
     } else {
-        io:println("Error: ", copyImage.detail().message);
+        io:println("Error: ", copyImage);
     }
 
     string volumeId = "";
-    var newVolume = amazonEC2Client->createVolume(zoneName, size = 8);
+    var newVolume = amazonEC2Client->createVolume(<@untainted> zoneName, size = 8);
     if (newVolume is amazonec2:Volume) {
         io:println("Successfully created a new volume: ", newVolume);
-        volumeId = untaint newVolume.volumeId;
+        volumeId = <@untainted> newVolume.volumeId;
     } else {
-        io:println("Error: ", newVolume.detail().message);
+        io:println("Error: ", newVolume);
     }
 
     runtime:sleep(60000);// wait for a bit before attaching to a new volume until it creates.
 
-    var attachmentInfo = amazonEC2Client->attachVolume(deviceName, instIds[0], volumeId);
+    var attachmentInfo = amazonEC2Client->attachVolume(deviceName, <@untainted> instIds[0], volumeId);
     if (attachmentInfo is amazonec2:AttachmentInfo) {
         io:println("Successfully attached volume: ", attachmentInfo);
     } else {
-        io:println("Error: ", attachmentInfo.detail().message);
+        io:println("Error: ", attachmentInfo);
     }
 
     runtime:sleep(60000); // wait for a bit before detaching the new volume until the attachment completes.
@@ -465,7 +465,7 @@ public function main() {
     if (detachmentInfo is amazonec2:AttachmentInfo) {
         io:println("Successfully detached the volume: ", detachmentInfo);
     } else {
-        io:println("Error: ", detachmentInfo.detail().message);
+        io:println("Error: ", detachmentInfo);
     }
 
     var terminated = amazonEC2Client->terminateInstances(instIds[0]);
@@ -474,7 +474,7 @@ public function main() {
         string instanceId = (terminated[0].id);
         io:println("Instance Id: ", instanceId);
     } else {
-        io:println("Error: ", terminated.detail().message);
+        io:println("Error: ", terminated);
     }
 
     runtime:sleep(100000); // wait for a bit before delete security group until the instance get terminates
@@ -483,7 +483,7 @@ public function main() {
     if (deleteSecurityGroupResponse is amazonec2:EC2ServiceResponse) {
         io:println("Successfully deleted the security group: ", deleteSecurityGroupResponse);
     } else {
-        io:println("Error: ", deleteSecurityGroupResponse.detail().message);
+        io:println("Error: ", deleteSecurityGroupResponse);
     }
 }
 ```
